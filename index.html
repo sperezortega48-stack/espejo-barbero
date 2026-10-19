@@ -348,6 +348,24 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 @keyframes rise{from{opacity:0;translate:0 2.5rem}to{opacity:1;translate:0 0}}
 @keyframes plx{from{translate:0 -6%}to{translate:0 6%}}
 .marco-plx{overflow:clip}.marco-plx img{scale:1.14}
+/* Análisis, color y maquillaje */
+.t-ana{margin-top:18px;border-top:1px dashed var(--linea)}
+.t-ana div{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--linea);font-size:.94rem}
+.t-ana dt{color:var(--suave)}
+.t-ana .mu{width:26px;height:26px;border-radius:50%;border:2px solid var(--blanco);box-shadow:0 0 0 1px var(--linea)}
+.t-ana small{grid-column:1/-1;color:var(--suave);font-size:.84rem}
+.paleta{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:14px;padding:0;list-style:none}
+.paleta li{background:var(--blanco);border-radius:12px;padding:10px 10px 12px;font-size:.92rem;box-shadow:0 10px 24px -20px rgba(17,30,45,.5)}
+.paleta i{display:block;height:64px;border-radius:8px;margin-bottom:8px;background:var(--c)}
+.maq{display:grid;gap:clamp(22px,3vw,34px)}
+.maq h4{font-size:clamp(1.6rem,2.4vw,2rem)}
+.maq p{max-width:62ch;margin-top:6px}
+.contorno{display:grid;gap:22px;align-items:center;background:var(--blanco);border-radius:16px;padding:22px}
+@media (min-width:700px){.contorno{grid-template-columns:200px 1fr}}
+.contorno svg{width:200px;max-width:100%;justify-self:center}
+.leyenda-maq{display:flex;gap:18px;margin-top:10px;font-size:.88rem;color:var(--suave);padding:0;list-style:none}
+.leyenda-maq li::before{content:"";display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:7px;vertical-align:-2px;background:var(--c)}
+.nota-det{font-size:.9rem;color:var(--rojo);margin:-8px 0 16px}
 .intro [data-intro]{visibility:hidden}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
@@ -368,7 +386,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
     <div class="wrap hero-grid">
       <div>
         <h1 data-intro data-intro-title>El corte que va con <em>tu cara.</em></h1>
-        <p class="lead" data-intro>Te miras en la cámara, medimos tu rostro con 478 puntos y, según lo que tengas planeado, te damos tu ficha de corte, barba y peinado con tutoriales.</p>
+        <p class="lead" data-intro>Te miras en la cámara y analizamos tu rostro, tu pelo y tu tono de piel. Según lo que tengas planeado, te damos tu ficha de corte, barba, peinado, color y maquillaje, con tutoriales.</p>
         <div class="hero-acc" data-intro>
           <a class="btn" href="#espejo" data-magnet>Analizar con la cámara</a>
           <a class="btn alt" href="#formas">Elegir mi forma a mano</a>
@@ -401,10 +419,10 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
           <h3>Mírate</h3><p>Enciende la cámara con buena luz, mira de frente y despeja la frente.</p></article>
         <article class="paso in-rise"><span class="n">2</span>
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M32 6c-13 0-20 10-20 24 0 17 9 28 20 30 11-2 20-13 20-30C52 16 45 6 32 6Z"/><path d="M12 30h40M17 44h30M32 6v54" stroke-dasharray="3 4"/></svg>
-          <h3>Medimos</h3><p>Comparamos largo, frente, pómulos, mandíbula y mentón para saber tu forma de rostro.</p></article>
+          <h3>Medimos</h3><p>Medimos las proporciones de tu rostro, ojos y labios, y leemos el color y el largo de tu pelo y el tono de tu piel.</p></article>
         <article class="paso in-rise"><span class="n">3</span>
           <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><circle cx="16" cy="46" r="8"/><circle cx="16" cy="18" r="8"/><path d="M22 41 56 14M22 23l34 27"/></svg>
-          <h3>Decides</h3><p>Nos cuentas qué tienes planeado y te damos tu ficha: corte, barba, peinado y qué evitar.</p></article>
+          <h3>Decides</h3><p>Nos cuentas qué tienes planeado y te damos tu ficha: corte, barba, peinado, color de pelo, maquillaje y qué evitar.</p></article>
       </div>
       <div class="franja-foto">
         <figure class="in-clip"><img src="https://images.pexels.com/photos/1836983/pexels-photo-1836983.jpeg?auto=compress&cs=tinysrgb&w=900" width="900" height="1350" alt="Barbero peinando a un cliente con degradado en una barbería" loading="lazy" style="object-position:50% 30%"><figcaption>Lleva tu ficha al barbero</figcaption></figure>
@@ -479,6 +497,18 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
           <label class="op"><input type="radio" name="pelo" value="rizado"><span><b>Rizado</b><small>Rizos definidos en espiral</small></span></label>
           <label class="op"><input type="radio" name="pelo" value="afro"><span><b>Afro</b><small>Rizo muy cerrado, en zigzag</small></span></label>
         </div></fieldset>
+        <p class="nota-det" id="notaDet" hidden>Tono y subtono detectados con la cámara: corrígelos si no coinciden.</p>
+        <fieldset class="q"><legend>Tu tono de piel</legend><div class="ops">
+          <label class="op"><input type="radio" name="piel" value="clara"><span><b>Clara</b><small>Te quemas con facilidad</small></span></label>
+          <label class="op"><input type="radio" name="piel" value="media"><span><b>Media</b><small>Te bronceas poco a poco</small></span></label>
+          <label class="op"><input type="radio" name="piel" value="oscura"><span><b>Oscura</b><small>Rara vez te quemas</small></span></label>
+          <label class="op"><input type="radio" name="piel" value="profunda"><span><b>Profunda</b><small>Muy rica en pigmento</small></span></label>
+        </div></fieldset>
+        <fieldset class="q"><legend>Tu subtono</legend><div class="ops">
+          <label class="op"><input type="radio" name="subtono" value="calido"><span><b>Cálido</b><small>Venas verdosas; te favorece el dorado</small></span></label>
+          <label class="op"><input type="radio" name="subtono" value="frio"><span><b>Frío</b><small>Venas azuladas; te favorece el plateado</small></span></label>
+          <label class="op"><input type="radio" name="subtono" value="neutro"><span><b>Neutro</b><small>Ves de ambos; te quedan los dos metales</small></span></label>
+        </div></fieldset>
         <fieldset class="q"><legend>Tiempo para peinarte cada día</legend><div class="ops">
           <label class="op"><input type="radio" name="tiempo" value="rapido"><span><b>2 minutos o menos</b><small>Lavar y salir</small></span></label>
           <label class="op"><input type="radio" name="tiempo" value="medio"><span><b>5 a 10 minutos</b><small>Algo de producto y secador</small></span></label>
@@ -503,6 +533,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <p class="t-conf" id="conf"></p>
         <p class="t-desc" id="descForma"></p>
         <dl class="medidas" id="medidas" hidden></dl>
+        <dl class="t-ana" id="tAna" hidden></dl>
         <ul class="t-plan" id="tPlan"></ul>
         <label class="t-cambiar">¿No coincide? Cámbiala: <select id="selForma"></select></label>
         <div class="t-acc"><button class="enlace" type="button" id="editarPlan">Cambiar mi plan</button><button class="enlace" type="button" id="imprimir">Imprimir ficha</button></div>
@@ -510,6 +541,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
       <div class="recs">
         <section><h3>Cortes para ti</h3><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol></section>
         <section id="bloqueBarba"><h3>Barba</h3><div class="aviso" id="avisoBarba" hidden></div><ol class="lista" id="listaBarba"></ol></section>
+        <section id="secColor" hidden><h3>Color de pelo que te favorece</h3><div id="color"></div></section>
+        <section id="secMaq" hidden><h3>Tu maquillaje</h3><div class="maq" id="maquillaje"></div></section>
         <section><h3>Peinados para tu día a día</h3><ol class="lista" id="listaPzFicha"></ol></section>
         <section><h3>Mejor evitar</h3><ul class="evitar" id="evitar"></ul></section>
       </div>
@@ -564,7 +597,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <details><summary>¿Qué tan exacto es el resultado?</summary><p>Es una guía orientativa basada en proporciones: largo, frente, pómulos, mandíbula y mentón, con corrección de la perspectiva de la cámara. La luz, el pelo sobre la frente o la barba pueden cambiar la lectura; por eso ves el porcentaje de coincidencia y puedes cambiar la forma a mano.</p></details>
         <details><summary>¿Funciona en iPhone?</summary><p>Sí, abriendo la web en Safari desde el enlace (no desde la vista previa de WhatsApp) y aceptando el permiso de cámara.</p></details>
         <details><summary>¿Por qué me pregunta qué tengo planeado?</summary><p>Porque la misma cara admite varios cortes. Si quieres dejarlo crecer te damos una ruta por etapas; si quieres algo práctico priorizamos cortes de poco mantenimiento; y el tipo de pelo cambia cómo pedirlo y peinarlo.</p></details>
-        <details><summary>¿Sirve para mujeres?</summary><p>Sí. En «Mujer» verás cortes y peinados pensados para cada forma de rostro.</p></details>
+        <details><summary>¿Cómo lee mi pelo y mi tono de piel?</summary><p>Un segundo modelo de MediaPipe separa en la imagen el pelo, la piel del rostro y el fondo. Con eso estimamos el color y el largo del pelo, si tienes flequillo, y el tono y el subtono de la piel (cálido, frío o neutro). La luz cambia mucho los colores: hazlo con luz natural de frente y corrige el resultado en el plan si no coincide.</p></details>
+        <details><summary>¿Sirve para mujeres?</summary><p>Sí. En «Mujer» verás cortes, peinados y una guía de maquillaje según tu forma de rostro, tu tono de piel, tus ojos y tus labios: base, contorno e iluminador, rubor, sombras y labiales.</p></details>
       </div>
     </div>
   </section>
@@ -753,6 +787,8 @@ const ETIQ = {
   plan: { crecer: 'Dejarlo crecer', mantener: 'Mantener el largo', corto: 'Más corto', nose: 'Explorando opciones' },
   pelo: { liso: 'Pelo liso', ondulado: 'Pelo ondulado', rizado: 'Pelo rizado', afro: 'Pelo afro' },
   tiempo: { rapido: '2 min al día', medio: '5–10 min al día', largo: 'Le gusta peinarse' },
+  piel: { clara: 'Piel clara', media: 'Piel media', oscura: 'Piel oscura', profunda: 'Piel profunda' },
+  subtono: { calido: 'Subtono cálido', frio: 'Subtono frío', neutro: 'Subtono neutro' },
   barba: { crecer: 'Barba: dejarla crecer', mantener: 'Barba: mantener', afeitar: 'Afeitado', poca: 'Barba poco poblada' }
 };
 const TIP_PELO = {
@@ -762,14 +798,47 @@ const TIP_PELO = {
   afro: ['Busca experiencia en pelo afro', 'Hidrata a diario (leave-in o aceite ligero), protege con gorro o funda de satén por la noche y define la forma con degradados o contornos limpios.']
 };
 
+const NOMBRE = { piel: { clara: 'Clara', media: 'Media', oscura: 'Oscura', profunda: 'Profunda' }, subtono: { calido: 'cálido', frio: 'frío', neutro: 'neutro' } };
+const TINTE = {
+  calido: [['Castaño chocolate cálido', '#5a3622'], ['Miel y caramelo (mechas)', '#b07a3e'], ['Cobre suave', '#a4502a']],
+  frio: [['Castaño moca frío', '#4a3a33'], ['Rubio ceniza', '#a99c86'], ['Negro azulado', '#141822']],
+  neutro: [['Castaño natural', '#5b4130'], ['Beige o champán (mechas)', '#c2a77f'], ['Balayage suave', '#8a6440']]
+};
+const EVITA_TINTE = { calido: 'Cenizas muy frías y platino: apagan tu piel.', frio: 'Dorados y cobres intensos: pueden enrojecer tu piel.', neutro: 'Tonos muy saturados (rojos o azules intensos), salvo que busques un look atrevido.' };
+const MAQ = {
+  base: { calido: 'Base de subtono amarillo o dorado.', frio: 'Base de subtono rosado.', neutro: 'Base de subtono neutro o beige: las dos familias te pueden funcionar.' },
+  rubor: { calido: [['Melocotón', '#f4a582'], ['Coral', '#f0806a'], ['Terracota', '#c8644a']], frio: [['Rosa frío', '#e79ab0'], ['Frambuesa', '#c2456e'], ['Malva', '#b77f9b']], neutro: [['Rosa palo', '#e6a7a3'], ['Durazno rosado', '#ee9f8c'], ['Malva suave', '#c3909e']] },
+  labios: { calido: [['Nude caramelo', '#b8775a'], ['Coral', '#e2584d'], ['Rojo anaranjado', '#c8341f']], frio: [['Nude rosado', '#c98a8f'], ['Ciruela', '#7d2b49'], ['Rojo azulado', '#a3122d']], neutro: [['Nude malva', '#b4807e'], ['Rosa intenso', '#c8496b'], ['Rojo verdadero', '#b3151f']] },
+  ojos: { calido: [['Bronce', '#9c6a3c'], ['Dorado', '#c9a14a'], ['Cobre', '#b5653a'], ['Verde oliva', '#6b6a3a']], frio: [['Plata', '#b9bdc4'], ['Gris pizarra', '#5f6670'], ['Lavanda', '#a690c2'], ['Azul marino', '#2b3a67']], neutro: [['Taupe', '#8b7a6e'], ['Champán', '#e3cfa8'], ['Malva', '#9a7385'], ['Chocolate', '#5b3a2b']] },
+  prof: { clara: 'Empieza con tonos suaves y transparentes; los muy oscuros pueden endurecer tus rasgos.', media: 'Puedes usar casi toda la gama; los tonos medios son los que más te iluminan.', oscura: 'Los tonos ricos e intensos (berenjena, cobre, dorado, rojo profundo) lucen muchísimo; evita polvos con tono grisáceo.', profunda: 'Los tonos ricos e intensos (berenjena, cobre, dorado, rojo profundo) lucen muchísimo; evita polvos y bases con tono grisáceo.' },
+  ojosSep: { separados: 'Concentra el tono más oscuro cerca del lagrimal y delinea el ojo completo.', juntos: 'Ilumina el lagrimal con un tono claro y lleva el más oscuro hacia la esquina exterior.', equilibrados: 'Puedes repartir el color de forma pareja por todo el párpado.' },
+  ojosForma: { redondos: 'Alarga la mirada con un delineado que salga hacia la sien.', almendrados: 'Casi cualquier técnica te funciona; un ahumado suave resalta tu forma.' },
+  labiosT: { finos: 'Tonos claros o con brillo y un perfilado apenas por fuera del borde natural.', medios: 'Libertad total: del nude al rojo.', gruesos: 'Lucen los tonos intensos y mate; perfila siguiendo tu borde natural.' }
+};
+/* Contorno (c) e iluminador (i) por forma: [tipo, x, y (fracción del largo), rx, ry, giro] */
+const ZONAS = {
+  ovalada: ['Contorno ligero bajo los pómulos e iluminador en el centro de la frente y en lo alto del pómulo.', [['c', 38, .56, 11, 5, -25], ['i', 0, .14, 10, 6, 0], ['i', 30, .42, 9, 4, -10]]],
+  redonda: ['Contorno en las sienes y en diagonal bajo los pómulos para afinar; ilumina en vertical la frente y el mentón.', [['c', 40, .26, 7, 14, 0], ['c', 36, .6, 13, 5, -35], ['i', 0, .14, 7, 13, 0], ['i', 0, .9, 6, 5, 0]]],
+  cuadrada: ['Suaviza las esquinas: contorno en los lados de la frente y en el ángulo de la mandíbula; ilumina frente y mentón.', [['c', 40, .14, 9, 10, 0], ['c', 40, .8, 9, 9, 0], ['i', 0, .15, 10, 6, 0], ['i', 0, .9, 7, 5, 0]]],
+  rectangular: ['Acorta con contorno en el nacimiento del pelo y la punta del mentón; rubor e iluminador horizontales en los pómulos.', [['c', 0, .03, 30, 6, 0], ['c', 0, .97, 16, 5, 0], ['i', 28, .43, 13, 5, 0]]],
+  alargada: ['Acorta con contorno en el nacimiento del pelo y la punta del mentón; rubor e iluminador horizontales en los pómulos.', [['c', 0, .03, 30, 6, 0], ['c', 0, .97, 15, 5, 0], ['i', 28, .43, 13, 5, 0]]],
+  corazon: ['Contorno en las sienes para reducir la frente; ilumina el mentón y lo alto del pómulo.', [['c', 38, .14, 9, 12, 0], ['i', 0, .9, 9, 6, 0], ['i', 28, .42, 10, 4, -10]]],
+  diamante: ['Contorno suave en la parte más ancha del pómulo; ilumina el centro de la frente y el mentón.', [['c', 46, .45, 6, 10, 0], ['i', 0, .13, 12, 6, 0], ['i', 0, .9, 8, 6, 0]]],
+  triangular: ['Contorno en los lados de la mandíbula; ilumina la frente y lo alto del pómulo para equilibrar.', [['c', 38, .82, 10, 9, 0], ['i', 0, .13, 16, 7, 0], ['i', 28, .4, 9, 4, -10]]]
+};
+function diagramaContorno(forma) {
+  const F = FORMAS[forma], H = F.p[0] * 100, oy = (130 - H) / 2;
+  const z = ZONAS[forma][1].flatMap(([t, x, y, rx, ry, g]) => (x ? [[t, x, y, rx, ry, g], [t, -x, y, rx, ry, -g]] : [[t, x, y, rx, ry, g]]));
+  return `<svg viewBox="-65 -8 130 146" aria-hidden="true">${z.map(([t, x, y, rx, ry, g]) => `<ellipse cx="${x}" cy="${(y * H + oy).toFixed(1)}" rx="${rx}" ry="${ry}" transform="rotate(${g} ${x} ${(y * H + oy).toFixed(1)})" fill="${t === 'c' ? 'rgba(122,74,48,.55)' : 'rgba(255,236,190,.95)'}"/>`).join('')}<g style="color:#111e2d">${silueta(F.p)}</g></svg>`;
+}
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const vid = $('#vid'), cv = $('#lienzo'), cx = cv.getContext('2d');
 const btnCam = $('#btnCam'), btnAnalizar = $('#btnAnalizar'), estado = $('#estado'), poste = $('#poste');
 const msg = t => { estado.textContent = t; };
-let modo = 'h', pzModo = 'h', formaActual = null, analisisActual = null, pref = { plan: '', pelo: '', tiempo: '', barba: '' };
-let detector = null, stream = null, corriendo = false, ultimo = -1, muestras = null, ultimoAviso = 0, cuadro = 0;
+let modo = 'h', pzModo = 'h', formaActual = null, analisisActual = null, pref = { plan: '', pelo: '', tiempo: '', barba: '', piel: '', subtono: '' };
+let segPromesa = null, segmentador = null, detector = null, stream = null, corriendo = false, ultimo = -1, muestras = null, ultimoAviso = 0, cuadro = 0;
 
 /* ── Silueta de cada forma, generada desde sus proporciones ── */
 function silueta(p) {
@@ -838,6 +907,13 @@ function peinadosPara() {
 function elegirForma(forma, analisis) {
   formaActual = forma; analisisActual = analisis;
   $('#planSub').textContent = `Tu rostro es ${FORMAS[forma].nombre.toLowerCase()}: ya sabemos qué te favorece. Cuéntanos qué buscas y afinamos la ficha.`;
+  const ex = analisis && analisis.extra;
+  $('#notaDet').hidden = !(ex && ex.piel);
+  if (ex && ex.piel) {
+    $$('input[name="piel"]').forEach(r => { r.checked = r.value === ex.piel.prof; });
+    $$('input[name="subtono"]').forEach(r => { r.checked = r.value === ex.piel.sub; });
+  }
+  if (ex && ex.pelo && ex.pelo.largo === 'largo') { const c = document.querySelector('input[name="plan"][value="mantener"]'); if (c && !document.querySelector('input[name="plan"]:checked')) c.checked = true; }
   $('#plan').hidden = false;
   if (window.ScrollTrigger) ScrollTrigger.refresh();
   $('#plan').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
@@ -845,10 +921,10 @@ function elegirForma(forma, analisis) {
 $('#formPlan').addEventListener('submit', e => {
   e.preventDefault();
   const f = new FormData(e.target);
-  pref = { plan: f.get('plan') || '', pelo: f.get('pelo') || '', tiempo: f.get('tiempo') || '', barba: f.get('barba') || '' };
+  pref = { plan: f.get('plan') || '', pelo: f.get('pelo') || '', tiempo: f.get('tiempo') || '', barba: f.get('barba') || '', piel: f.get('piel') || '', subtono: f.get('subtono') || '' };
   renderFicha(true);
 });
-$('#saltar').addEventListener('click', () => { pref = { plan: '', pelo: '', tiempo: '', barba: '' }; renderFicha(true); });
+$('#saltar').addEventListener('click', () => { const x = analisisActual && analisisActual.extra && analisisActual.extra.piel; pref = { plan: '', pelo: '', tiempo: '', barba: '', piel: x ? x.prof : '', subtono: x ? x.sub : '' }; renderFicha(true); });
 $('#editarPlan').addEventListener('click', () => $('#plan').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
 $('#imprimir').addEventListener('click', () => print());
 
@@ -878,7 +954,7 @@ function renderFicha(desplazar) {
     $('#medidas').hidden = false;
     $('#conf').textContent = `Coincidencia ${a.conf}% · segunda opción: ${FORMAS[a.segunda].nombre}`;
   } else { $('#medidas').hidden = true; $('#conf').textContent = 'Elegida a mano'; }
-  $('#tPlan').innerHTML = ['plan', 'pelo', 'tiempo', 'barba'].filter(k => pref[k] && (k !== 'barba' || modo === 'h')).map(k => `<li>${ETIQ[k][pref[k]]}</li>`).join('');
+  $('#tPlan').innerHTML = ['plan', 'pelo', 'tiempo', 'barba', 'piel', 'subtono'].filter(k => pref[k] && (k !== 'barba' || modo === 'h')).map(k => `<li>${ETIQ[k][pref[k]]}</li>`).join('');
 
   let i = 0;
   const cortes = ordenarCortes(g.cortes);
@@ -927,6 +1003,32 @@ function renderFicha(desplazar) {
   $('#listaPzFicha').innerHTML = peinadosPara().map(([slug, [n, t, dif, prod]]) =>
     `<li class="rec" style="--i:${i++}">${fotoTut(slug, n, 'r-foto')}<div><div class="rec-cab"><h4>${n}</h4></div><p class="meta">${t} · ${dif} · Necesitas: ${prod}</p>${itemTut(slug, n)}</div></li>`).join('');
   $('#evitar').innerHTML = g.evitar.map(t => `<li style="--i:${i++}">${t}</li>`).join('');
+
+  const ex = a && a.extra, sub = pref.subtono, prof = pref.piel;
+  const filas = [];
+  if (ex && ex.pelo) filas.push(['Pelo', [ex.pelo.color, ex.pelo.largo, ex.pelo.flequillo ? 'con flequillo' : '', ex.pelo.volumen ? 'volumen arriba' : ''].filter(Boolean).join(' · '), ex.pelo.hex]);
+  if (prof || sub) filas.push(['Piel', [prof && NOMBRE.piel[prof], sub && 'subtono ' + NOMBRE.subtono[sub]].filter(Boolean).join(' · '), ex && ex.piel ? ex.piel.hex : '']);
+  if (ex && ex.ojos) filas.push(['Ojos', ex.ojos.forma + ' · ' + ex.ojos.sep, '']);
+  if (ex && ex.labios) filas.push(['Labios', ex.labios, '']);
+  $('#tAna').innerHTML = filas.map(([k, val, hex]) => `<div><dt>${k}</dt><dd>${val}</dd>${hex ? `<span class="mu" style="background:${hex}"></span>` : '<span></span>'}</div>`).join('') + (ex ? '<small>Lectura de la cámara: la luz cambia el color; usa luz natural de frente.</small>' : '');
+  $('#tAna').hidden = !filas.length;
+
+  $('#secColor').hidden = !sub;
+  if (sub) $('#color').innerHTML = `<p>${modo === 'h' ? 'Si quieres color o cubrir canas, estos tonos van con tu piel:' : 'Si quieres un cambio de color, estos tonos van con tu piel:'}</p>` +
+    `<ul class="paleta">${(ex && ex.pelo ? [['Tu color actual: ' + ex.pelo.color, ex.pelo.hex]] : []).concat(TINTE[sub]).map(([n, c]) => `<li><i style="--c:${c}"></i>${n}</li>`).join('')}</ul>` +
+    `<ul class="evitar" style="margin-top:14px"><li>${EVITA_TINTE[sub]}</li></ul>`;
+
+  $('#secMaq').hidden = !(modo === 'm' && sub);
+  if (modo === 'm' && sub) {
+    const pal = (k) => `<ul class="paleta">${MAQ[k][sub].map(([n, c]) => `<li><i style="--c:${c}"></i>${n}</li>`).join('')}</ul>`;
+    const z = ZONAS[forma];
+    $('#maquillaje').innerHTML =
+      `<div><h4>Base</h4><p>${MAQ.base[sub]} Pruébala en la mandíbula con luz natural, nunca en la mano.${prof ? ' ' + MAQ.prof[prof] : ''}</p></div>` +
+      `<div class="contorno">${diagramaContorno(forma)}<div><h4>Contorno e iluminador</h4><p>${z[0]}</p><ul class="leyenda-maq"><li style="--c:rgba(122,74,48,.75)">Contorno</li><li style="--c:#f3dca6">Iluminador</li></ul></div></div>` +
+      `<div><h4>Rubor</h4>${pal('rubor')}</div>` +
+      `<div><h4>Ojos</h4>${pal('ojos')}${ex && ex.ojos ? `<p>${MAQ.ojosSep[ex.ojos.sep]} ${MAQ.ojosForma[ex.ojos.forma]}</p>` : ''}</div>` +
+      `<div><h4>Labios</h4>${pal('labios')}${ex && ex.labios ? `<p>${MAQ.labiosT[ex.labios]}</p>` : ''}</div>`;
+  }
 
   const ficha = $('#ficha');
   ficha.hidden = false;
@@ -998,8 +1100,77 @@ async function crearDetector() {
   const { FaceLandmarker, FilesetResolver } = await import(MP + '/vision_bundle.mjs');
   const fs = await FilesetResolver.forVisionTasks(MP + '/wasm');
   const op = delegate => ({ baseOptions: { modelAssetPath: MODELO, delegate }, runningMode: 'VIDEO', numFaces: 1 });
-  try { return await FaceLandmarker.createFromOptions(fs, op('GPU')); }
-  catch (e) { return await FaceLandmarker.createFromOptions(fs, op('CPU')); }
+  let lm;
+  try { lm = await FaceLandmarker.createFromOptions(fs, op('GPU')); }
+  catch (e) { lm = await FaceLandmarker.createFromOptions(fs, op('CPU')); }
+  segPromesa = crearSegmentador(fs).catch(() => null);   // pelo y piel: carga en segundo plano
+  return lm;
+}
+const MODELO_SEG = 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite';
+async function crearSegmentador(fs) {
+  const { ImageSegmenter } = await import(MP + '/vision_bundle.mjs');
+  const op = delegate => ({ baseOptions: { modelAssetPath: MODELO_SEG, delegate }, runningMode: 'VIDEO', outputCategoryMask: true, outputConfidenceMasks: false });
+  try { segmentador = await ImageSegmenter.createFromOptions(fs, op('GPU')); }
+  catch (e) { segmentador = await ImageSegmenter.createFromOptions(fs, op('CPU')); }
+}
+/* ── Rasgos y color ── */
+const hexDe = ([r, g, b]) => '#' + [r, g, b].map(x => Math.round(x).toString(16).padStart(2, '0')).join('');
+function lab([r, g, b]) {
+  const f = c => { c /= 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; };
+  const R = f(r), G = f(g), B = f(b), t = x => x > .008856 ? Math.cbrt(x) : 7.787 * x + 16 / 116;
+  const X = t((R * .4124 + G * .3576 + B * .1805) / .95047), Y = t(R * .2126 + G * .7152 + B * .0722), Z = t((R * .0193 + G * .1192 + B * .9505) / 1.08883);
+  return [116 * Y - 16, 500 * (X - Y), 200 * (Y - Z)];
+}
+function colorPelo([L, a, b]) {
+  const C = Math.hypot(a, b), hh = Math.atan2(b, a) * 180 / Math.PI;
+  if (L > 58 && C < 12) return 'canoso o gris';
+  if (C > 22 && hh > 15 && hh < 60 && L > 25) return 'cobrizo';
+  return L < 20 ? 'negro' : L < 30 ? 'castaño oscuro' : L < 42 ? 'castaño' : L < 55 ? 'castaño claro' : 'rubio';
+}
+function medirRasgos(c) {
+  const q = desproyectar(c), d = (a, b) => Math.hypot(q[a][0] - q[b][0], q[a][1] - q[b][1]);
+  const ancho = (d(33, 133) + d(362, 263)) / 2, alto = (d(159, 145) + d(386, 374)) / 2;
+  return [alto / ancho, d(133, 362) / ancho, d(0, 17) / d(61, 291)];
+}
+function rasgos(m) {
+  return { ojos: { forma: m[4] > .32 ? 'redondos' : 'almendrados', sep: m[5] > 1.15 ? 'separados' : m[5] < .9 ? 'juntos' : 'equilibrados' }, labios: m[6] > .42 ? 'gruesos' : m[6] < .28 ? 'finos' : 'medios' };
+}
+async function leerPeloPiel(cara) {
+  if (!segmentador && segPromesa) await Promise.race([segPromesa, new Promise(r => setTimeout(r, 25000))]);
+  return new Promise(resolve => {
+    if (!segmentador) return resolve(null);
+    try {
+      segmentador.segmentForVideo(vid, performance.now(), res => {
+        try {
+          const m = res.categoryMask, w = m.width, h = m.height, cls = m.getAsUint8Array();
+          const oc = document.createElement('canvas'); oc.width = w; oc.height = h;
+          const o = oc.getContext('2d', { willReadFrequently: true }); o.drawImage(vid, 0, 0, w, h);
+          const px = o.getImageData(0, 0, w, h).data;
+          const top = cara[10].y * h, chin = cara[152].y * h, fh = chin - top, cxF = cara[1].x * w, fw = Math.abs(cara[454].x - cara[234].x) * w;
+          const cejas = Math.min(cara[105].y, cara[334].y) * h, fx0 = Math.min(cara[70].x, cara[300].x) * w, fx1 = Math.max(cara[70].x, cara[300].x) * w;
+          let n = 0, sr = 0, sg = 0, sb = 0, hTop = h, hBot = 0, fN = 0, fH = 0; const piel = [];
+          for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+            const i = y * w + x, k = cls[i];
+            if (y > top && y < cejas && x > fx0 && x < fx1) { fN++; if (k === 1) fH++; }
+            if (k === 1 && Math.abs(x - cxF) < fw * 1.2) { n++; sr += px[i * 4]; sg += px[i * 4 + 1]; sb += px[i * 4 + 2]; if (y < hTop) hTop = y; if (y > hBot) hBot = y; }
+            else if (k === 3 && (x + y) % 2 === 0) piel.push([px[i * 4], px[i * 4 + 1], px[i * 4 + 2]]);
+          }
+          const out = {};
+          if (n > fw * fh * .04) {
+            const rgb = [sr / n, sg / n, sb / n], rel = (hBot - chin) / fh;
+            out.pelo = { color: colorPelo(lab(rgb)), hex: hexDe(rgb), largo: rel < -.15 ? 'corto' : rel < .3 ? 'largo medio' : 'largo', flequillo: fN > 0 && fH / fN > .35, volumen: (top - hTop) / fh > .38 };
+          } else out.pelo = { color: 'muy corto o rapado', hex: '', largo: 'muy corto', flequillo: false, volumen: false };
+          if (piel.length > 200) {
+            const L = piel.map(lab).filter(x => x[0] > 15 && x[0] < 95), med = j => { const s = L.map(x => x[j]).sort((p, q) => p - q); return s[s.length >> 1]; };
+            const l = med(0), aa = med(1), bb = med(2), hh = Math.atan2(bb, aa) * 180 / Math.PI;
+            const rgbMed = [0, 1, 2].map(j => { const s = piel.map(x => x[j]).sort((p, q) => p - q); return s[s.length >> 1]; });
+            out.piel = { prof: l > 68 ? 'clara' : l > 57 ? 'media' : l > 42 ? 'oscura' : 'profunda', sub: hh >= 58 ? 'calido' : hh <= 46 ? 'frio' : 'neutro', hex: hexDe(rgbMed) };
+          }
+          resolve(out);
+        } catch (e) { resolve(null); }
+      });
+    } catch (e) { resolve(null); }
+  });
 }
 async function encender() {
   if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) { msg('Este navegador no permite la cámara aquí. Abre la página con https:// (o desde localhost).'); return; }
@@ -1059,14 +1230,20 @@ function recoger(cara, k) {
   const ahora = performance.now();
   const aviso = !cara ? 'No veo tu cara. Colócate dentro del espejo.' : !k.dist ? 'Acércate un poco a la cámara.' : !k.frente ? 'Gira la cara para mirar de frente a la cámara.' : !k.nivel ? 'Endereza la cabeza, sin inclinarla.' : '';
   if (aviso) { if (ahora - ultimoAviso > 900) { msg(aviso); ultimoAviso = ahora; } return; }
-  muestras.push(medir(cara));
+  muestras.push(medir(cara).concat(medirRasgos(cara)));
   poste.style.setProperty('--p', muestras.length / N);
   if (muestras.length < N) return;
-  const med = [0, 1, 2, 3].map(j => { const v = muestras.map(m => m[j]).sort((a, b) => a - b); return v[v.length >> 1]; });
+  const med = [0, 1, 2, 3, 4, 5, 6].map(j => { const v = muestras.map(m => m[j]).sort((a, b) => a - b); return v[v.length >> 1]; });
   muestras = null; poste.classList.remove('activo'); btnAnalizar.disabled = false;
-  const r = clasificar(med);
-  msg(`Tu rostro parece ${FORMAS[r.forma].nombre.toLowerCase()}. Puedes repetir el análisis cuando quieras.`);
-  elegirForma(r.forma, r);
+  const r = clasificar(med.slice(0, 4));
+  r.extra = rasgos(med);
+  msg('Leyendo tu pelo y tu tono de piel…');
+  leerPeloPiel(cara).then(pp => {
+    if (pp) Object.assign(r.extra, pp);
+    const pe = r.extra.pelo, pi = r.extra.piel;
+    msg(`Rostro ${FORMAS[r.forma].nombre.toLowerCase()}` + (pe ? `, pelo ${pe.color} ${pe.largo}` : '') + (pi ? `, piel ${NOMBRE.piel[pi.prof].toLowerCase()} de subtono ${NOMBRE.subtono[pi.sub]}` : '') + '. Puedes repetir el análisis cuando quieras.');
+    elegirForma(r.forma, r);
+  });
 }
 
 /* ── Tutoriales (MP4 renderizados con HyperFrames) ── */

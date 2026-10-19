@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<!-- Diseño y desarrollo: Santiago Pérez — S&S Generation AI · ssgeneration.lat -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Santiago Pérez — S&S Generation AI">
+<title>Espejo — El corte y la barba que van con tu cara</title>
+<meta name="description" content="Enciende la cámara, mide la forma de tu rostro en tiempo real y recibe recomendaciones de corte de cabello y barba. Todo se procesa en tu navegador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&family=Libre+Caslon+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* hex primero: iPhones con iOS < 16.2 no entienden oklch()/color-mix() */
+  --papel:#f9f6f2; --blanco:#fefdfc; --tinta:#111e2d; --rojo:#be2323; --azul:#154d8c; --laton:#c69e58; --linea:#cbd0d7; --suave:#515b69;
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --spring: linear(0, .059, .194, .359, .524, .672, .793, .886, .952, .996, 1.022, 1.035, 1.038, 1.036, 1.031, 1.025, 1.019, 1.013, 1.008, 1.005, 1.002, 1, .999, .999, 1);
+  --display: 'Libre Caslon Condensed', Georgia, serif;
+  --texto: 'Familjen Grotesk', system-ui, sans-serif;
+}
+@supports (color: color-mix(in oklch, red, blue)){
+  :root{
+    --papel: oklch(97.5% .006 85); --blanco: oklch(99.5% .002 85); --tinta: oklch(23% .035 255);
+    --rojo: oklch(52% .19 27); --azul: oklch(42% .12 255); --laton: oklch(72% .1 80);
+    --linea: color-mix(in oklch, var(--tinta) 16%, var(--papel));
+    --suave: color-mix(in oklch, var(--tinta) 68%, var(--papel));
+  }
+}
+*,*::before,*::after{box-sizing:border-box;margin:0}
+html,body{overflow-x:clip}
+body{background:var(--papel);color:var(--tinta);font:400 1.0625rem/1.55 var(--texto);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;line-height:.95;text-wrap:balance}
+p{text-wrap:pretty}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--rojo);outline-offset:3px}
+.wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+
+/* ── Cabecera ── */
+.top{display:flex;justify-content:space-between;align-items:baseline;padding-block:22px;border-bottom:1px solid var(--linea)}
+.marca{font:700 1.9rem/1 var(--display);text-decoration:none;letter-spacing:-.01em}
+.marca b{color:var(--rojo)}
+.top nav{display:flex;gap:clamp(14px,3vw,34px)}
+.top nav a{text-decoration:none;background:linear-gradient(currentColor 0 0) 0 100%/0 1px no-repeat;transition:background-size .45s var(--ease-out)}
+.top nav a:hover,.top nav a:focus-visible{background-size:100% 1px}
+
+/* ── Hero / espejo ── */
+.hero{display:grid;gap:clamp(32px,5vw,72px);padding-block:clamp(36px,7vw,96px);align-items:center}
+@media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr}}
+h1{font-size:clamp(3.4rem,10.5vw,8.6rem);letter-spacing:-.02em}
+h1 .l{display:block;overflow:clip;padding-bottom:.06em}
+h1 .l>span{display:block}
+h1 em{font-style:normal;color:var(--rojo)}
+.lead{font-size:clamp(1.1rem,1.6vw,1.3rem);max-width:34ch;margin-top:26px;color:var(--suave)}
+.modo{display:inline-flex;margin:34px 0 0;min-inline-size:0;border:1.5px solid var(--tinta);border-radius:999px;padding:4px}
+.modo legend{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.modo label{position:relative;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.modo input{position:absolute;opacity:0;width:1px;height:1px}
+.modo span{display:block;padding:11px 24px;border-radius:999px;transition:background-color .3s,color .3s}
+.modo input:checked+span{background:var(--tinta);color:var(--papel)}
+.modo input:focus-visible+span{outline:3px solid var(--rojo);outline-offset:2px}
+.acciones{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.btn{border:1.5px solid var(--tinta);background:var(--tinta);color:var(--papel);padding:15px 26px;border-radius:4px;cursor:pointer;font-weight:500;transition:scale .6s var(--spring),background-color .3s}
+.btn:hover{background:var(--rojo);border-color:var(--rojo)}
+.btn:active{scale:.96}
+.btn.sec{background:none;color:var(--tinta)}
+.btn.sec:hover{background:var(--tinta);color:var(--papel)}
+.btn:disabled{opacity:.4;cursor:not-allowed;background:var(--tinta);color:var(--papel)}
+.btn.sec:disabled{background:none;color:var(--tinta)}
+.estado{margin-top:18px;min-height:3.2em;max-width:44ch;font-size:.98rem}
+.manual{display:block;margin-top:8px;font-size:.95rem;color:var(--suave)}
+.manual select,.ficha select{border:0;border-bottom:1.5px solid currentColor;background:none;padding:4px 2px;cursor:pointer;color:var(--tinta)}
+
+.espejo{justify-self:center;width:min(100%,540px)}
+.marco{position:relative;aspect-ratio:3/4;border:12px solid var(--laton);border-radius:50% 50% 14px 14px / 34% 34% 14px 14px;overflow:clip;background:var(--tinta);box-shadow:inset 0 0 0 2px oklch(55% .08 75),0 30px 60px -30px oklch(23% .035 255 / .45)}
+.marco video,.marco canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.vacio{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:14px;color:oklch(85% .02 85);text-align:center;padding:24px}
+.vacio svg{width:42%;opacity:.55}
+.vacio[hidden]{display:none}
+.poste{position:relative;height:10px;margin-top:18px;border-radius:5px;overflow:clip;background:repeating-linear-gradient(-45deg,var(--rojo) 0 10px,var(--blanco) 10px 20px,var(--azul) 20px 30px,var(--blanco) 30px 40px);background-size:56.57px 56.57px}
+.poste i{position:absolute;inset:0;background:var(--linea);transform-origin:100% 50%;transform:scaleX(calc(1 - var(--p,0)));transition:transform .2s linear}
+.poste.activo{animation:poste .9s linear infinite}
+@keyframes poste{to{background-position:56.57px 0}}
+.leyenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;padding:0;list-style:none;font-size:.88rem;color:var(--suave)}
+.leyenda li::before{content:"";display:inline-block;width:18px;height:3px;margin-right:7px;vertical-align:middle;background:var(--c)}
+
+/* ── Ficha ── */
+.ficha{padding-block:clamp(40px,7vw,90px);border-top:1px solid var(--linea);scroll-margin-top:12px}
+.ficha[hidden]{display:none}
+.ficha-grid{display:grid;gap:clamp(32px,5vw,64px);align-items:start}
+@media (min-width:900px){.ficha-grid{grid-template-columns:380px 1fr}.ticket{position:sticky;top:24px}}
+.ticket{position:relative;background:var(--blanco);padding:28px 26px 34px;box-shadow:0 18px 40px -24px oklch(23% .035 255 / .35);font-variant-numeric:tabular-nums}
+.ticket::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:11px;background:radial-gradient(circle at 10px 0,var(--blanco) 9.5px,transparent 10px) 0 0/20px 11px repeat-x}
+.t-cab{display:flex;justify-content:space-between;font-size:.86rem;color:var(--suave);padding-bottom:14px;border-bottom:1px dashed var(--linea)}
+.t-forma{padding-block:20px 10px}
+.t-forma h2{font-size:clamp(3rem,6vw,4.4rem);color:var(--rojo)}
+.t-conf{margin-top:8px;font-size:.95rem;color:var(--suave)}
+.t-desc{margin-top:14px}
+.medidas{margin-top:18px;border-top:1px dashed var(--linea)}
+.medidas div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--linea);font-size:.95rem}
+.medidas dd{font-weight:700}
+.t-cambiar{margin-top:16px;font-size:.92rem;color:var(--suave)}
+
+.recs h3{font-size:clamp(2rem,4vw,3rem);margin-bottom:6px}
+.recs section+section{margin-top:clamp(36px,5vw,56px)}
+.lista{list-style:none;padding:0}
+.rec{padding-block:22px;border-bottom:1px solid var(--linea)}
+.rec-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.rec h4{font-size:clamp(1.55rem,2.6vw,2rem)}
+.rec .por{margin-top:8px;max-width:60ch}
+.rec .pide{margin-top:10px;max-width:62ch;padding-left:14px;border-left:3px solid var(--laton)}
+.rec .meta{margin-top:10px;font-size:.92rem;color:var(--suave)}
+.tut{flex:none;border:1.5px solid var(--tinta);background:none;border-radius:999px;padding:7px 15px;font-size:.88rem;cursor:pointer;transition:background-color .3s,color .3s,scale .6s var(--spring)}
+.tut:hover{background:var(--tinta);color:var(--papel)}
+.tut:active{scale:.95}
+.evitar{padding-left:1.1em}
+.evitar li{padding-block:6px}
+.evitar li::marker{content:"✕  ";color:var(--rojo);font-weight:700}
+
+@media (prefers-reduced-motion:no-preference){
+  h1 .l>span{animation:sube 1.1s var(--ease-out) both}
+  h1 .l:nth-child(2)>span{animation-delay:.09s}
+  h1 .l:nth-child(3)>span{animation-delay:.18s}
+  .ficha.imprime .ticket{animation:imprimir 1.1s var(--ease-out) both}
+  .ficha.imprime .rec,.ficha.imprime .evitar li{animation:entra .8s var(--ease-out) both;animation-delay:calc(var(--i,0) * 70ms + .45s)}
+}
+@keyframes sube{from{transform:translateY(105%)}to{transform:none}}
+@keyframes imprimir{from{clip-path:inset(0 0 100% 0);transform:translateY(-24px)}to{clip-path:inset(-40px -40px -70px -40px);transform:none}}
+@keyframes entra{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ── Tutoriales y privacidad ── */
+.bloque{padding-block:clamp(48px,8vw,110px);border-top:1px solid var(--linea);display:grid;gap:clamp(24px,4vw,64px)}
+@media (min-width:900px){.bloque{grid-template-columns:1fr 1.2fr}}
+.bloque h2{font-size:clamp(2.6rem,6vw,5rem)}
+.bloque p+p{margin-top:14px}
+.bloque code{font-size:.92em;background:var(--blanco);padding:2px 6px;border-radius:3px}
+.flujo{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;font-weight:500}
+.flujo span{border:1.5px solid var(--tinta);padding:8px 14px;border-radius:4px}
+.flujo i{font-style:normal;color:var(--rojo)}
+
+/* ── Modal tutorial ── */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(17,30,45,.82)}
+.modal[hidden]{display:none}
+.modal-caja{background:var(--papel);width:min(860px,100%);padding:22px;border-radius:6px}
+.modal-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:14px}
+.modal-cab h3{font-size:clamp(1.6rem,3vw,2.2rem)}
+.modal video{width:100%;aspect-ratio:16/9;background:var(--tinta);border-radius:4px}
+.falta{aspect-ratio:16/9;display:grid;place-content:center;gap:10px;text-align:center;padding:24px;background:var(--blanco);border:1.5px dashed var(--linea);border-radius:4px}
+.falta[hidden],.modal video[hidden]{display:none}
+
+/* ── Pie + publicidad ── */
+.pie{border-top:1px solid var(--linea);padding-block:40px 34px}
+.ads{display:grid;gap:16px}
+@media (min-width:900px){.ads{grid-template-columns:2fr 1fr}}
+.ad{min-height:100px;display:grid;place-items:center;border:1.5px dashed var(--linea);border-radius:4px;color:var(--suave);font-size:.88rem;text-align:center;padding:8px}
+.ad:has(ins){border:0;display:block}
+.pie p{margin-top:26px;font-size:.9rem;color:var(--suave);max-width:70ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="marca" href="#">Espejo<b>.</b></a>
+    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#tutoriales">Tutoriales</a><a href="#privacidad">Privacidad</a></nav>
+  </header>
+
+  <main>
+    <section class="hero" id="espejo">
+      <div>
+        <h1><span class="l"><span>Tu cara</span></span><span class="l"><span>decide</span></span><span class="l"><span>el <em>corte.</em></span></span></h1>
+        <p class="lead">Mírate en la cámara: medimos tu rostro con 478 puntos en tiempo real y te decimos qué corte y qué barba te favorecen, y cuáles evitar.</p>
+
+        <fieldset class="modo">
+          <legend>Recomendaciones para</legend>
+          <label><input type="radio" name="modo" value="h" checked><span>Hombre</span></label>
+          <label><input type="radio" name="modo" value="m"><span>Mujer</span></label>
+        </fieldset>
+        <div class="acciones">
+          <button type="button" class="btn" id="btnCam">Encender cámara</button>
+          <button type="button" class="btn sec" id="btnAnalizar" disabled>Analizar mi rostro</button>
+        </div>
+        <p class="estado" id="estado" aria-live="polite">La cámara solo se enciende cuando pulsas el botón. La imagen nunca sale de tu equipo.</p>
+        <label class="manual">¿Prefieres no usar la cámara? Elige tu forma:
+          <select id="selManual"><option value="">—</option></select>
+        </label>
+        <noscript><p class="estado">Activa JavaScript para usar la cámara y ver las recomendaciones.</p></noscript>
+      </div>
+
+      <div class="espejo">
+        <div class="marco">
+          <video id="vid" playsinline muted></video>
+          <canvas id="lienzo" aria-hidden="true"></canvas>
+          <div class="vacio" id="vacio">
+            <svg viewBox="0 0 100 120" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M50 8c-22 0-34 17-34 40 0 30 16 58 34 64 18-6 34-34 34-64 0-23-12-40-34-40Z"/><path d="M34 52h8M58 52h8M46 74c3 3 5 3 8 0" stroke-linecap="round"/></svg>
+            <p>Espejo apagado</p>
+          </div>
+        </div>
+        <div class="poste" id="poste" aria-hidden="true"><i></i></div>
+        <ul class="leyenda" aria-label="Medidas dibujadas">
+          <li style="--c:#d9b45f">Frente</li><li style="--c:#ffffff">Pómulos</li><li style="--c:#e0503f">Mandíbula</li><li style="--c:#7fb0e6">Largo</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ficha" id="ficha" hidden aria-labelledby="forma">
+      <div class="ficha-grid">
+        <div class="ticket">
+          <div class="t-cab"><span>Ficha de corte</span><span id="tFecha"></span></div>
+          <div class="t-forma">
+            <p>Forma de rostro</p>
+            <h2 id="forma"></h2>
+            <p class="t-conf" id="conf"></p>
+          </div>
+          <p class="t-desc" id="descForma"></p>
+          <dl class="medidas" id="medidas" hidden>
+            <div><dt>Largo ÷ pómulos</dt><dd id="mR"></dd></div>
+            <div><dt>Frente ÷ pómulos</dt><dd id="mF"></dd></div>
+            <div><dt>Mandíbula ÷ pómulos</dt><dd id="mJ"></dd></div>
+            <div><dt>Mentón ÷ pómulos</dt><dd id="mC"></dd></div>
+          </dl>
+          <label class="t-cambiar">¿No coincide? Cámbiala:
+            <select id="selForma"></select>
+          </label>
+        </div>
+
+        <div class="recs">
+          <section><h3>Cortes que te favorecen</h3><ol class="lista" id="listaCortes"></ol></section>
+          <section id="bloqueBarba"><h3>Barba</h3><ol class="lista" id="listaBarba"></ol></section>
+          <section><h3>Mejor evitar</h3><ul class="evitar" id="evitar"></ul></section>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque" id="tutoriales">
+      <h2>Tutoriales en vídeo</h2>
+      <div>
+        <p>Cada corte y cada barba recomendados tienen su tutorial paso a paso, con el botón <b>Ver tutorial</b> de la ficha.</p>
+        <p>Los vídeos se producen con <b>HyperFrames</b>: cada tutorial es una composición HTML (ilustraciones, textos y tiempos de cada paso) que HyperFrames renderiza a MP4. El archivo resultante se guarda junto a esta página como <code>tutoriales/&lt;estilo&gt;.mp4</code>, por ejemplo <code>tutoriales/tupe-texturizado.mp4</code>.</p>
+        <div class="flujo" aria-label="Proceso de producción"><span>Composición HTML</span><i>/</i><span>HyperFrames</span><i>/</i><span>MP4</span><i>/</i><span>Esta web</span></div>
+      </div>
+    </section>
+
+    <section class="bloque" id="privacidad">
+      <h2>Tu imagen no sale de aquí</h2>
+      <div>
+        <p>El análisis lo hace MediaPipe Face Landmarker directamente en tu navegador. No se graba, no se guarda y no se envía ninguna imagen a ningún servidor.</p>
+        <p>La forma del rostro se calcula con proporciones entre puntos (largo, frente, pómulos, mandíbula y mentón). Es una guía orientativa: tu barbero o estilista también tendrá en cuenta el tipo de pelo, los remolinos y tu estilo.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="ads" aria-label="Publicidad">
+      <div class="ad" data-slot="0000000000" data-formato="horizontal">Espacio publicitario · Google AdSense</div>
+      <div class="ad" data-slot="1111111111" data-formato="auto">Espacio publicitario · Google AdSense</div>
+    </div>
+    <p>© <span id="anio">2026</span> Espejo. Recomendaciones orientativas basadas en la forma del rostro.</p>
+  </footer>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTit">
+  <div class="modal-caja">
+    <div class="modal-cab"><h3 id="modalTit"></h3><button type="button" class="tut" id="cerrar">Cerrar</button></div>
+    <video id="tutVid" controls playsinline preload="metadata"></video>
+    <div class="falta" id="tutFalta" hidden>
+      <p><b>Este tutorial aún no está renderizado.</b></p>
+      <p>Se genera con HyperFrames y se guarda como <code id="tutRuta"></code>.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Publicidad: pon aquí tu ID de editor de AdSense y tus IDs de bloque (data-slot) ── */
+const ADSENSE_CLIENT = 'ca-pub-XXXXXXXXXXXXXXXX';
+(function () {
+  if (/X/.test(ADSENSE_CLIENT) || location.protocol === 'file:') return; // sin ID real o abierto en local → se ven los espacios reservados
+  const s = document.createElement('script');
+  s.async = true; s.crossOrigin = 'anonymous';
+  s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
+  document.head.appendChild(s);
+  document.querySelectorAll('.ad').forEach(a => {
+    const ins = document.createElement('ins');
+    ins.className = 'adsbygoogle'; ins.style.display = 'block';
+    ins.dataset.adClient = ADSENSE_CLIENT; ins.dataset.adSlot = a.dataset.slot;
+    ins.dataset.adFormat = a.dataset.formato; ins.dataset.fullWidthResponsive = 'true';
+    a.textContent = ''; a.appendChild(ins);
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  });
+})();
+document.getElementById('anio').textContent = new Date().getFullYear();
+</script>
+
+<script>
+/* ── Biblioteca de estilos (los slugs nombran el MP4 del tutorial) ── */
+const CORTES_H = {
+  'tupe-texturizado': ['Tupé texturizado', 'Degradado medio en los lados (del 1 al 3) y arriba 6–8 cm con textura, el frente un poco más largo para levantarlo.', '3–4 semanas', 'pasta o arcilla mate'],
+  'pompadour': ['Pompadour', 'Lados cortos con degradado alto; arriba 8–12 cm, más largo al frente, para peinar hacia atrás con volumen.', '3–4 semanas', 'pomada de fijación media y secador'],
+  'crew-cut': ['Crew cut con degradado', 'Degradado bajo-medio en los lados (del 0,5 al 2) y arriba 2–4 cm a tijera, algo más largo al frente.', '2–3 semanas', 'crema ligera o nada'],
+  'raya-lateral': ['Raya al lado clásica', 'Lados a tijera o máquina 3–4, arriba 5–7 cm y la raya marcada del lado de tu remolino.', '4 semanas', 'pomada de brillo bajo'],
+  'french-crop': ['French crop', 'Degradado bajo o medio, arriba 3–5 cm texturizado y flequillo corto hacia delante, desfilado.', '3 semanas', 'polvo texturizante o arcilla'],
+  'undercut': ['Undercut', 'Lados y nuca al 1–2 sin degradar, con desconexión marcada; arriba 8–12 cm para peinar hacia atrás o al lado.', '2–3 semanas (lados)', 'pomada o gel de fijación media'],
+  'faux-hawk': ['Faux hawk', 'Degradado alto en los lados y una franja central de 5–7 cm con textura, peinada hacia el centro y arriba.', '3 semanas', 'cera o arcilla fuerte'],
+  'slick-back': ['Peinado hacia atrás', 'Lados con degradado bajo o tijera y arriba 8–10 cm uniforme para peinar hacia atrás.', '4 semanas', 'pomada al agua'],
+  'medio-desfilado': ['Largo medio desfilado', '8–12 cm en todo, capas desfiladas para quitar peso y laterales cubriendo parte de la oreja.', '5–6 semanas', 'spray de sal marina o crema de peinado'],
+  'flequillo-lateral': ['Flequillo lateral texturizado', 'Degradado bajo en los lados, arriba 5–7 cm con flequillo largo barrido a un lado y puntas desfiladas.', '3–4 semanas', 'arcilla mate'],
+  'lados-tijera': ['Texturizado con lados a tijera', 'Sin degradado alto: lados a tijera de 2–3 cm y arriba 6–8 cm con textura y volumen.', '4 semanas', 'mousse o polvo de volumen']
+};
+const BARBAS = {
+  'barba-3-dias': ['Barba de 3 días', 'Recortadora a 3–5 mm en todo. Limpia el cuello dos dedos sobre la nuez y deja la línea de las mejillas natural.'],
+  'barba-corta': ['Barba corta uniforme', '6–10 mm en todo. Contorno de mejillas bajo y natural; cuello definido un dedo sobre la nuez.'],
+  'barba-completa': ['Barba completa recortada', '1,5–3 cm, con los laterales algo más cortos que el mentón. Perfila mejillas y cuello cada semana.'],
+  'barba-caja': ['Barba en caja', 'Laterales cortos (6–10 mm) y mentón más largo (2–3 cm) con esquinas definidas; cuello limpio.'],
+  'candado': ['Candado', 'Bigote unido a la perilla formando un círculo alrededor de la boca, mejillas afeitadas, 5–10 mm.'],
+  'van-dyke': ['Van Dyke', 'Perilla en punta de 2–4 cm separada del bigote; mejillas y laterales afeitados.'],
+  'ancla': ['Barba ancla', 'Perilla que sigue la línea de la mandíbula y bigote separado; laterales afeitados.'],
+  'laterales-poblados': ['Barba con laterales poblados', 'Patillas y laterales a 1–2 cm, mentón más corto (5–8 mm): ensancha sin alargar.'],
+  'menton-redondeado': ['Barba corta de mentón redondeado', '8–12 mm, redondeando la línea del mentón con la recortadora para suavizar ángulos.'],
+  'perilla-extendida': ['Perilla extendida', 'Perilla y bigote unidos hasta la línea de la mandíbula, mejillas afeitadas, mentón de 1–2 cm.']
+};
+const CORTES_M = {
+  'bob-mandibula': ['Bob a la mandíbula', 'Corte recto a la altura de la mandíbula, nuca un poco más corta y puntas pulidas.'],
+  'capas-largas': ['Largo con capas', 'Capas largas que empiecen bajo el mentón, puntas desfiladas y movimiento con secador.'],
+  'pixie': ['Pixie texturizado', '3–6 cm, más largo arriba, flequillo desfilado y nuca y patillas limpias.'],
+  'flequillo-cortina': ['Flequillo cortina', 'Flequillo abierto al centro que cae hacia los lados hasta los pómulos.'],
+  'lob-asimetrico': ['Lob asimétrico', 'Long bob a la clavícula, un lado algo más largo, con raya lateral.'],
+  'flequillo-lateral-largo': ['Flequillo lateral largo', 'Flequillo largo barrido a un lado que cae hasta la mejilla.'],
+  'media-melena-ondas': ['Media melena con ondas', 'Melena a los hombros con capas suaves y ondas abiertas.'],
+  'bob-barbilla': ['Bob a la barbilla con volumen', 'Bob a la altura de la barbilla con volumen en las puntas y capas internas.'],
+  'flequillo-recto': ['Flequillo recto', 'Flequillo recto a la altura de las cejas, denso, con melena media.'],
+  'volumen-coronilla': ['Capas con volumen arriba', 'Capas cortas en la coronilla y laterales que se pegan al rostro bajo los pómulos.'],
+  'recogido-mechones': ['Recogido con mechones sueltos', 'Moño bajo con mechones sueltos que enmarcan la cara.']
+};
+
+/* ── Formas: prototipo [largo, frente, mandíbula, mentón] ÷ ancho de pómulos.
+   Centro calibrado con el modelo canónico de MediaPipe (rostro promedio = ovalada). ── */
+const FORMAS = {
+  ovalada: { nombre: 'Ovalada', p: [1.16, .82, .77, .42],
+    desc: 'Largo algo mayor que el ancho, frente y mandíbula equilibradas. La forma más versátil: casi todo te queda bien.',
+    h: { cortes: [['tupe-texturizado', 'Suma altura sin romper tu equilibrio natural.'], ['raya-lateral', 'Un clásico que aprovecha tus proporciones.'], ['crew-cut', 'Limpio y fácil; deja ver tu estructura.']],
+         barba: [['barba-3-dias', 'Define sin cambiar proporciones.'], ['barba-completa', 'No necesitas corregir nada: te la puedes permitir.'], ['candado', 'Centra la atención en boca y mentón.']],
+         evitar: ['Flequillos largos y pesados que tapen la frente: acortan la cara.'] },
+    m: { cortes: [['bob-mandibula', 'Marca tu línea de mandíbula.'], ['capas-largas', 'Da movimiento sin alterar tus proporciones.'], ['pixie', 'Tus facciones aguantan el pelo corto.']],
+         evitar: ['Volumen exagerado en un solo punto: rompe el equilibrio.'] } },
+  redonda: { nombre: 'Redonda', p: [1.04, .83, .80, .45],
+    desc: 'Largo y ancho parecidos, pómulos llenos y mandíbula suave. Objetivo: alargar y sumar ángulos.',
+    h: { cortes: [['pompadour', 'La altura arriba alarga visualmente la cara.'], ['undercut', 'Lados muy cortos: la cara se ve más estrecha.'], ['faux-hawk', 'Crea una línea vertical que estiliza.']],
+         barba: [['barba-caja', 'El mentón más largo alarga y dibuja ángulos.'], ['perilla-extendida', 'Una línea vertical en el mentón.'], ['van-dyke', 'Afina la parte baja de la cara.']],
+         evitar: ['Volumen a los lados y flequillo recto.', 'Barba poblada en las mejillas: redondea más.'] },
+    m: { cortes: [['lob-asimetrico', 'La asimetría rompe la redondez.'], ['capas-largas', 'Las capas por debajo del mentón afinan.'], ['flequillo-lateral-largo', 'La diagonal estiliza.']],
+         evitar: ['Bob redondeado a la altura de las mejillas.', 'Flequillo recto y denso.'] } },
+  cuadrada: { nombre: 'Cuadrada', p: [1.06, .86, .87, .50],
+    desc: 'Frente, pómulos y mandíbula de anchos parecidos, con la mandíbula marcada y angulosa.',
+    h: { cortes: [['crew-cut', 'Lados cortos que lucen tu mandíbula.'], ['french-crop', 'La textura arriba suaviza los ángulos.'], ['slick-back', 'Elegante sobre una estructura fuerte.']],
+         barba: [['barba-3-dias', 'Realza la mandíbula sin endurecerla.'], ['menton-redondeado', 'Suaviza las esquinas.'], ['candado', 'Lleva la atención al centro.']],
+         evitar: ['Cortes muy geométricos en todo: endurecen.', 'Barba en caja con esquinas marcadas.'] },
+    m: { cortes: [['media-melena-ondas', 'Las ondas suavizan la mandíbula.'], ['flequillo-cortina', 'Enmarca y redondea.'], ['capas-largas', 'Capas desde la mandíbula hacia abajo.']],
+         evitar: ['Bob recto justo a la mandíbula.', 'Raya al medio con el pelo pegado.'] } },
+  rectangular: { nombre: 'Rectangular', p: [1.28, .86, .86, .48],
+    desc: 'Cara larga con frente, pómulos y mandíbula de anchos parecidos. Objetivo: acortar y sumar ancho.',
+    h: { cortes: [['french-crop', 'El flequillo acorta la frente.'], ['raya-lateral', 'Lados no muy cortos mantienen el ancho.'], ['medio-desfilado', 'El volumen lateral equilibra el largo.']],
+         barba: [['laterales-poblados', 'Ensancha sin alargar.'], ['barba-corta', 'Uniforme y corta en el mentón.'], ['barba-3-dias', 'Da presencia sin sumar largo.']],
+         evitar: ['Pompadour o tupé alto: alargan más.', 'Degradado alto con lados rapados.', 'Perillas largas.'] },
+    m: { cortes: [['flequillo-recto', 'Acorta visualmente la cara.'], ['bob-barbilla', 'Volumen lateral que ensancha.'], ['media-melena-ondas', 'Suma ancho a los lados.']],
+         evitar: ['Largo liso sin capas.', 'Volumen en la coronilla.'] } },
+  alargada: { nombre: 'Alargada', p: [1.30, .81, .76, .42],
+    desc: 'Largo claramente mayor que el ancho, con la mandíbula más estrecha que los pómulos.',
+    h: { cortes: [['flequillo-lateral', 'Rompe la verticalidad.'], ['french-crop', 'El flequillo acorta.'], ['medio-desfilado', 'Suma ancho a los lados.']],
+         barba: [['laterales-poblados', 'Ensancha la parte baja.'], ['barba-completa', 'Laterales llenos con el mentón corto.'], ['barba-corta', 'Presencia sin alargar.']],
+         evitar: ['Altura arriba (tupé, pompadour).', 'Perilla o barba larga en el mentón.'] },
+    m: { cortes: [['flequillo-cortina', 'Acorta y enmarca.'], ['bob-barbilla', 'Ancho a la altura de la barbilla.'], ['media-melena-ondas', 'Volumen lateral.']],
+         evitar: ['Melena larga y lisa pegada a la cara.', 'Recogidos altos.'] } },
+  corazon: { nombre: 'Corazón', p: [1.15, .88, .71, .36],
+    desc: 'Frente ancha que se estrecha hacia un mentón fino o en punta.',
+    h: { cortes: [['medio-desfilado', 'Cubre parte de la frente y equilibra.'], ['flequillo-lateral', 'Reduce el ancho de la frente.'], ['raya-lateral', 'Con lados no muy rapados.']],
+         barba: [['barba-completa', 'Suma masa a la mandíbula.'], ['barba-caja', 'Ensancha el mentón.'], ['ancla', 'Da presencia al mentón.']],
+         evitar: ['Lados rapados con mucho volumen arriba: agranda la frente.'] },
+    m: { cortes: [['bob-barbilla', 'Volumen justo donde la cara se estrecha.'], ['flequillo-lateral-largo', 'Suaviza la frente.'], ['capas-largas', 'Capas desde la mandíbula.']],
+         evitar: ['Volumen en la coronilla.', 'Recogidos muy tirantes.'] } },
+  diamante: { nombre: 'Diamante', p: [1.18, .75, .71, .37],
+    desc: 'Pómulos anchos y marcados, con la frente y la mandíbula más estrechas.',
+    h: { cortes: [['french-crop', 'El flequillo ensancha la frente.'], ['flequillo-lateral', 'Equilibra los pómulos.'], ['medio-desfilado', 'Lados con cuerpo, no rapados.']],
+         barba: [['barba-completa', 'Ensancha el mentón.'], ['candado', 'Da peso al mentón.'], ['barba-caja', 'Suma ancho abajo.']],
+         evitar: ['Degradado alto: resalta los pómulos.', 'Tupé muy alto.'] },
+    m: { cortes: [['flequillo-cortina', 'Ensancha la frente.'], ['bob-barbilla', 'Volumen a la altura de la mandíbula.'], ['recogido-mechones', 'Los mechones suavizan los pómulos.']],
+         evitar: ['Raya al medio lisa y pegada.', 'Volumen a la altura de los pómulos.'] } },
+  triangular: { nombre: 'Triangular', p: [1.10, .75, .85, .47],
+    desc: 'La mandíbula es más ancha que la frente.',
+    h: { cortes: [['lados-tijera', 'Volumen arriba y a los lados que equilibra la mandíbula.'], ['tupe-texturizado', 'Ensancha la parte superior (pide lados sin rapar).'], ['raya-lateral', 'Cuerpo arriba sin endurecer.']],
+         barba: [['barba-3-dias', 'No suma ancho a la mandíbula.'], ['barba-corta', 'Corta en los laterales.'], ['candado', 'Atención al centro, no a los lados.']],
+         evitar: ['Barba voluminosa en los laterales.', 'Lados rapados con poco volumen arriba.'] },
+    m: { cortes: [['volumen-coronilla', 'Ensancha la parte de arriba.'], ['pixie', 'Volumen arriba.'], ['flequillo-cortina', 'Da ancho a la frente.']],
+         evitar: ['Bob justo a la mandíbula.', 'Peinados pegados arriba.'] } }
+};
+
+const $ = s => document.querySelector(s);
+const vid = $('#vid'), cv = $('#lienzo'), cx = cv.getContext('2d');
+const btnCam = $('#btnCam'), btnAnalizar = $('#btnAnalizar'), estado = $('#estado'), poste = $('#poste'), ficha = $('#ficha');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const msg = t => { estado.textContent = t; };
+const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+let modo = 'h', formaActual = null, detector = null, stream = null, corriendo = false, ultimo = -1, muestras = null, ultimoAviso = 0;
+
+/* ── Selectores de forma ── */
+const opciones = Object.entries(FORMAS).map(([k, f]) => `<option value="${k}">${f.nombre}</option>`).join('');
+$('#selManual').insertAdjacentHTML('beforeend', opciones);
+$('#selForma').innerHTML = opciones;
+$('#selManual').addEventListener('change', e => { if (e.target.value) mostrar(e.target.value, null); });
+$('#selForma').addEventListener('change', e => mostrar(e.target.value, null, false));
+
+/* ── Hombre / Mujer ── */
+const radios = document.querySelectorAll('input[name="modo"]');
+radios.forEach(r => { if (r.checked) modo = r.value; });   // Safari restaura el estado al volver atrás
+radios.forEach(r => r.addEventListener('change', () => {
+  if (!r.checked) return;
+  modo = r.value;
+  if (formaActual) mostrar(formaActual, undefined, true);
+}));
+
+/* ── Ficha de recomendaciones ── */
+function itemTut(slug, nombre) { return `<button type="button" class="tut" data-slug="${slug}" data-nombre="${esc(nombre)}">Ver tutorial</button>`; }
+function render(forma) {
+  const F = FORMAS[forma], g = F[modo];
+  let i = 0;
+  $('#listaCortes').innerHTML = g.cortes.map(([slug, por]) => {
+    if (modo === 'h') {
+      const [n, pide, mant, prod] = CORTES_H[slug];
+      return `<li class="rec" style="--i:${i++}"><div class="rec-cab"><h4>${n}</h4>${itemTut(slug, n)}</div><p class="por">${por}</p><p class="pide"><b>Pídele al barbero:</b> ${pide}</p><p class="meta">Mantenimiento cada ${mant} · Producto: ${prod}</p></li>`;
+    }
+    const [n, pide] = CORTES_M[slug];
+    return `<li class="rec" style="--i:${i++}"><div class="rec-cab"><h4>${n}</h4>${itemTut(slug, n)}</div><p class="por">${por}</p><p class="pide"><b>Pide en el salón:</b> ${pide}</p></li>`;
+  }).join('');
+  $('#bloqueBarba').hidden = modo !== 'h';
+  $('#listaBarba').innerHTML = modo === 'h' ? F.h.barba.map(([slug, por]) => {
+    const [n, como] = BARBAS[slug];
+    return `<li class="rec" style="--i:${i++}"><div class="rec-cab"><h4>${n}</h4>${itemTut(slug, n)}</div><p class="por">${por}</p><p class="pide"><b>Cómo recortarla:</b> ${como}</p></li>`;
+  }).join('') : '';
+  $('#evitar').innerHTML = g.evitar.map(t => `<li style="--i:${i++}">${t}</li>`).join('');
+}
+function mostrar(forma, analisis, desplazar = true) {
+  formaActual = forma;
+  const F = FORMAS[forma];
+  $('#forma').textContent = F.nombre;
+  $('#descForma').textContent = F.desc;
+  $('#selForma').value = forma;
+  $('#tFecha').textContent = new Date().toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (analisis) {
+    const [r, f, j, c] = analisis.m;
+    $('#mR').textContent = r.toFixed(2); $('#mF').textContent = f.toFixed(2); $('#mJ').textContent = j.toFixed(2); $('#mC').textContent = c.toFixed(2);
+    $('#medidas').hidden = false;
+    $('#conf').textContent = `Coincidencia ${analisis.conf}% · segunda opción: ${FORMAS[analisis.segunda].nombre}`;
+  } else if (analisis === null) {
+    $('#medidas').hidden = true;
+    $('#conf').textContent = 'Elegida a mano';
+  }
+  render(forma);
+  ficha.hidden = false;
+  ficha.classList.remove('imprime'); void ficha.offsetWidth; ficha.classList.add('imprime');
+  if (desplazar) ficha.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+
+/* ── Clasificación: distancia al prototipo de cada forma ── */
+const ESCALA = [.07, .04, .04, .05], PESO = [1, 1, 1, .5];
+function clasificar(m) {
+  const d = Object.entries(FORMAS).map(([k, F]) => [k, Math.sqrt(F.p.reduce((s, v, i) => s + PESO[i] * ((m[i] - v) / ESCALA[i]) ** 2, 0))]).sort((a, b) => a[1] - b[1]);
+  const w = d.map(([, x]) => Math.exp(-x)), tot = w.reduce((a, b) => a + b, 0);
+  return { forma: d[0][0], segunda: d[1][0], conf: Math.round(100 * w[0] / tot), m };
+}
+
+/* ── Geometría (índices de la malla de MediaPipe) ── */
+const OVAL = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
+const P = { top: 10, chin: 152, fl: 54, fr: 284, cl: 234, cr: 454, jl: 172, jr: 397, ml: 149, mr: 378, nose: 1, el: 33, er: 263 };
+const px = (c, i) => [c[i].x * cv.width, c[i].y * cv.height];
+const dist = (c, a, b) => { const [x1, y1] = px(c, a), [x2, y2] = px(c, b); return Math.hypot(x2 - x1, y2 - y1); };
+function medir(c) { const C = dist(c, P.cl, P.cr); return [dist(c, P.top, P.chin) / C, dist(c, P.fl, P.fr) / C, dist(c, P.jl, P.jr) / C, dist(c, P.ml, P.mr) / C]; }
+function postura(c) {
+  if (dist(c, P.cl, P.cr) < cv.width * .22) return 'Acércate un poco a la cámara.';
+  const a = dist(c, P.nose, P.cl), b = dist(c, P.nose, P.cr);
+  if (Math.min(a, b) / Math.max(a, b) < .8) return 'Gira la cara para mirar de frente a la cámara.';
+  const [x1, y1] = px(c, P.el), [x2, y2] = px(c, P.er);
+  if (Math.atan2(Math.abs(y2 - y1), Math.abs(x2 - x1)) * 180 / Math.PI > 7) return 'Endereza la cabeza, sin inclinarla.';
+  return '';
+}
+
+function linea(c, a, b, color) {
+  const [x1, y1] = px(c, a), [x2, y2] = px(c, b);
+  cx.strokeStyle = color; cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2); cx.stroke();
+  cx.fillStyle = color; [[x1, y1], [x2, y2]].forEach(([x, y]) => { cx.beginPath(); cx.arc(x, y, cx.lineWidth * 1.6, 0, 7); cx.fill(); });
+}
+function dibujar(c) {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  if (!c) return;
+  cx.lineWidth = Math.max(2, cv.width / 360);
+  cx.fillStyle = 'rgba(255,255,255,.35)';
+  for (let i = 0; i < c.length; i += 4) cx.fillRect(c[i].x * cv.width - 1, c[i].y * cv.height - 1, 2, 2);
+  cx.strokeStyle = 'rgba(255,255,255,.9)';
+  cx.beginPath(); OVAL.forEach((i, k) => { const [x, y] = px(c, i); k ? cx.lineTo(x, y) : cx.moveTo(x, y); }); cx.closePath(); cx.stroke();
+  linea(c, P.fl, P.fr, '#d9b45f'); linea(c, P.cl, P.cr, '#ffffff'); linea(c, P.jl, P.jr, '#e0503f'); linea(c, P.top, P.chin, '#7fb0e6');
+}
+
+/* ── Cámara + MediaPipe Face Landmarker ── */
+const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.1.1';
+const MODELO = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+async function crearDetector() {
+  const { FaceLandmarker, FilesetResolver } = await import(MP + '/vision_bundle.mjs');
+  const fs = await FilesetResolver.forVisionTasks(MP + '/wasm');
+  const op = delegate => ({ baseOptions: { modelAssetPath: MODELO, delegate }, runningMode: 'VIDEO', numFaces: 1 });
+  try { return await FaceLandmarker.createFromOptions(fs, op('GPU')); }
+  catch (e) { return await FaceLandmarker.createFromOptions(fs, op('CPU')); }
+}
+async function encender() {
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) { msg('Este navegador no permite la cámara aquí. Abre la página con https:// (o desde localhost).'); return; }
+  btnCam.disabled = true;
+  try {
+    msg('Pidiendo permiso para la cámara…');
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false });
+    vid.srcObject = stream; await vid.play();
+    $('#vacio').hidden = true;
+    if (!detector) { msg('Cargando el detector facial (unos 4 MB, solo la primera vez)…'); detector = await crearDetector(); }
+    corriendo = true; ultimo = -1; requestAnimationFrame(bucle);
+    btnAnalizar.disabled = false;
+    btnCam.textContent = 'Apagar cámara';
+    msg('Listo. Mira de frente, con buena luz y la frente despejada, y pulsa «Analizar mi rostro».');
+  } catch (e) {
+    apagar(false);
+    msg(e.name === 'NotAllowedError' ? 'No diste permiso a la cámara. Actívalo desde el candado de la barra de direcciones y vuelve a intentarlo.'
+      : e.name === 'NotFoundError' ? 'No se encontró ninguna cámara en este equipo.'
+      : 'No se pudo iniciar el detector. Revisa tu conexión a internet y recarga la página.');
+  } finally { btnCam.disabled = false; }
+}
+function apagar(avisar = true) {
+  corriendo = false; muestras = null;
+  if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; vid.srcObject = null;
+  cx.clearRect(0, 0, cv.width, cv.height);
+  $('#vacio').hidden = false; poste.classList.remove('activo'); poste.style.setProperty('--p', 0);
+  btnAnalizar.disabled = true; btnCam.textContent = 'Encender cámara';
+  if (avisar) msg('Cámara apagada.');
+}
+btnCam.addEventListener('click', () => (stream ? apagar() : encender()));
+
+function bucle() {
+  if (!corriendo) return;
+  if (vid.readyState >= 2 && vid.currentTime !== ultimo) {
+    ultimo = vid.currentTime;
+    if (cv.width !== vid.videoWidth) { cv.width = vid.videoWidth; cv.height = vid.videoHeight; }
+    const res = detector.detectForVideo(vid, performance.now()); const cara = res.faceLandmarks && res.faceLandmarks[0];
+    dibujar(cara);
+    if (muestras) recoger(cara);
+  }
+  requestAnimationFrame(bucle);
+}
+
+/* ── Análisis: 40 fotogramas válidos → mediana ── */
+const N = 40;
+btnAnalizar.addEventListener('click', () => {
+  muestras = []; btnAnalizar.disabled = true; poste.classList.add('activo'); poste.style.setProperty('--p', 0);
+  msg('Analizando… quédate quieto un momento.');
+});
+function recoger(cara) {
+  const ahora = performance.now();
+  const aviso = cara ? postura(cara) : 'No veo tu cara. Colócate dentro del espejo.';
+  if (aviso) { if (ahora - ultimoAviso > 900) { msg(aviso); ultimoAviso = ahora; } return; }
+  muestras.push(medir(cara));
+  poste.style.setProperty('--p', muestras.length / N);
+  if (muestras.length < N) return;
+  const med = [0, 1, 2, 3].map(k => { const v = muestras.map(m => m[k]).sort((a, b) => a - b); return v[v.length >> 1]; });
+  muestras = null; poste.classList.remove('activo'); btnAnalizar.disabled = false;
+  const r = clasificar(med);
+  msg(`Tu rostro parece ${FORMAS[r.forma].nombre.toLowerCase()}. Puedes repetir el análisis cuando quieras.`);
+  mostrar(r.forma, r);
+}
+
+/* ── Tutoriales (MP4 renderizados con HyperFrames) ── */
+const modal = $('#modal'), tutVid = $('#tutVid'), tutFalta = $('#tutFalta');
+let origen = null;
+document.addEventListener('click', e => {
+  const b = e.target.closest('.tut[data-slug]'); if (!b) return;
+  origen = b;
+  const ruta = `tutoriales/${b.dataset.slug}.mp4`;
+  $('#modalTit').textContent = b.dataset.nombre;
+  $('#tutRuta').textContent = ruta;
+  tutFalta.hidden = true; tutVid.hidden = false; tutVid.src = ruta;
+  modal.hidden = false; $('#cerrar').focus();
+});
+tutVid.addEventListener('error', () => { tutVid.hidden = true; tutFalta.hidden = false; });
+function cerrarModal() { if (modal.hidden) return; tutVid.pause(); tutVid.removeAttribute('src'); tutVid.load(); modal.hidden = true; if (origen) origen.focus(); }
+$('#cerrar').addEventListener('click', cerrarModal);
+modal.addEventListener('click', e => { if (e.target === modal) cerrarModal(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+</script>
+<!-- Diseño y desarrollo: Santiago Pérez — S&S Generation AI · ssgeneration.lat -->
+</body>
+</html>

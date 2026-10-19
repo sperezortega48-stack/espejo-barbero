@@ -473,7 +473,19 @@ const OVAL = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 36
 const P = { top: 10, chin: 152, fl: 54, fr: 284, cl: 234, cr: 454, jl: 172, jr: 397, ml: 149, mr: 378, nose: 1, el: 33, er: 263 };
 const px = (c, i) => [c[i].x * cv.width, c[i].y * cv.height];
 const dist = (c, a, b) => { const [x1, y1] = px(c, a), [x2, y2] = px(c, b); return Math.hypot(x2 - x1, y2 - y1); };
-function medir(c) { const C = dist(c, P.cl, P.cr); return [dist(c, P.top, P.chin) / C, dist(c, P.fl, P.fr) / C, dist(c, P.jl, P.jr) / C, dist(c, P.ml, P.mr) / C]; }
+/* Corrección de perspectiva: los lados de la cara están más lejos del lente que frente y mentón,
+   así que en la imagen la cara sale más estrecha (todo parecía "rectangular"). Se desproyecta cada punto
+   con su profundidad z, asumiendo ~60° de campo de visión y 15 cm entre los puntos 234 y 454. */
+const FOV = 60;
+function desproyectar(c) {
+  const W = cv.width, H = cv.height, fp = (W / 2) / Math.tan(FOV * Math.PI / 360);
+  const k = 15 / Math.hypot((c[P.cl].x - c[P.cr].x) * W, (c[P.cl].y - c[P.cr].y) * H), D = fp * k;
+  return c.map(p => { const s = (D + p.z * W * k) / fp; return [(p.x * W - W / 2) * s, (p.y * H - H / 2) * s]; });
+}
+function medir(c) {
+  const q = desproyectar(c), d = (a, b) => Math.hypot(q[a][0] - q[b][0], q[a][1] - q[b][1]), C = d(P.cl, P.cr);
+  return [d(P.top, P.chin) / C, d(P.fl, P.fr) / C, d(P.jl, P.jr) / C, d(P.ml, P.mr) / C];
+}
 function postura(c) {
   if (dist(c, P.cl, P.cr) < cv.width * .22) return 'Acércate un poco a la cámara.';
   const a = dist(c, P.nose, P.cl), b = dist(c, P.nose, P.cr);

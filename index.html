@@ -245,8 +245,25 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .rec .por{margin-top:10px;max-width:62ch}
 .rec .pide{margin-top:10px;max-width:64ch;padding-left:14px;border-left:3px solid var(--laton)}
 .rec .meta{margin-top:10px;font-size:.92rem;color:var(--suave)}
-.rec.corte{grid-template-columns:1fr}
-@media (min-width:700px){.rec.corte{grid-template-columns:330px 1fr}}
+.rec.corte{grid-template-columns:150px 1fr}
+@media (min-width:700px){.rec.corte{grid-template-columns:230px 1fr}}
+.foto-corte{margin:0;align-self:start}
+.foto-corte img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:120px 120px 10px 10px;border:4px solid var(--laton)}
+.foto-corte figcaption{font-size:.76rem;color:var(--suave);text-align:center;margin-top:4px}
+.cambio{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;background:var(--blanco);border-radius:18px;padding:20px}
+.cambio figure{margin:0;text-align:center}
+.cambio img{width:100%;max-width:220px;aspect-ratio:4/5;object-fit:cover;border-radius:110px 110px 10px 10px;border:4px solid var(--laton);margin-inline:auto}
+.cambio figcaption{margin-top:8px;font-size:.92rem}
+.cambio figcaption b{display:block;font:700 1.5rem/1.05 var(--display)}
+.cambio .flecha{font:700 2.6rem/1 var(--display);color:var(--rojo)}
+.cambio p{grid-column:1/-1;margin:4px 0 0}
+.tend{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.tend article{background:var(--tinta-2);border-radius:16px;overflow:clip}
+.tend img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.tend div{padding:16px 18px 20px}
+.tend h3{font-size:1.9rem}
+.tend p{color:var(--humo);font-size:.94rem;margin-top:6px}
+.tend small{display:block;color:var(--laton-2);margin-top:8px;font-size:.86rem}
 .vistas{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0;align-self:start}
 .vistas div{background:#e4e9ef;border-radius:60px 60px 8px 8px;overflow:clip;text-align:center;padding-bottom:6px;border:3px solid var(--laton)}
 .vistas svg{display:block;width:100%}
@@ -380,7 +397,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 <header class="top" id="top">
   <div class="wrap">
     <a class="marca" href="#">Espejo<b>.</b></a>
-    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#formas">Formas de rostro</a><a href="#peinados">Peinados</a><a href="#tutoriales">Tutoriales</a><a href="#preguntas">Preguntas</a></nav>
+    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#formas">Formas de rostro</a><a href="#tendencias">Tendencias</a><a href="#peinados">Peinados</a><a href="#tutoriales">Tutoriales</a><a href="#preguntas">Preguntas</a></nav>
     <a class="btn" href="#espejo" data-magnet>Ir al espejo</a>
   </div>
 </header>
@@ -543,9 +560,10 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <dl class="t-ana" id="tAna" hidden></dl>
         <ul class="t-plan" id="tPlan"></ul>
         <label class="t-cambiar">¿No coincide? Cámbiala: <select id="selForma"></select></label>
-        <div class="t-acc"><button class="enlace" type="button" id="editarPlan">Cambiar mi plan</button><button class="enlace" type="button" id="imprimir">Imprimir ficha</button></div>
+        <div class="t-acc"><button class="enlace" type="button" id="editarPlan">Cambiar mi plan</button><button class="enlace" type="button" id="imprimir">Imprimir ficha</button><button class="enlace" type="button" id="whatsapp">Enviar a mi barbero</button></div>
       </aside>
       <div class="recs">
+        <section id="secCambio" hidden><h3>Tu cambio</h3><div class="cambio" id="cambio"></div></section>
         <section><h3>Cortes para ti</h3><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol></section>
         <section id="bloqueBarba"><h3>Barba</h3><div class="aviso" id="avisoBarba" hidden></div><ol class="lista" id="listaBarba"></ol></section>
         <section id="secColor" hidden><h3>Color de pelo que te favorece</h3><div id="color"></div></section>
@@ -563,6 +581,14 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <p>Cada forma se define por sus proporciones. Si ya conoces la tuya, ábrela y ve directo a tus recomendaciones.</p>
       </header>
       <div class="formas" id="gridFormas"></div>
+    </div>
+  </section>
+
+  <section class="sec osc" id="tendencias" style="padding-top:0">
+    <div class="wrap">
+      <header class="sec-cab"><div><span class="kicker">Lo que se pide hoy</span><h2 data-lines>Tendencias 2026.</h2></div>
+        <p>Lo más pedido este año en barberías y salones, con las formas de rostro a las que mejor les quedan.</p></header>
+      <div class="tend" id="gridTend"></div>
     </div>
   </section>
 
@@ -605,6 +631,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <details><summary>¿Funciona en iPhone?</summary><p>Sí, abriendo la web en Safari desde el enlace (no desde la vista previa de WhatsApp) y aceptando el permiso de cámara.</p></details>
         <details><summary>¿Por qué me pregunta qué tengo planeado?</summary><p>Porque la misma cara admite varios cortes. Si quieres dejarlo crecer te damos una ruta por etapas; si quieres algo práctico priorizamos cortes de poco mantenimiento; y el tipo de pelo cambia cómo pedirlo y peinarlo.</p></details>
         <details><summary>¿Cómo lee mi pelo y mi tono de piel?</summary><p>Un segundo modelo de MediaPipe separa en la imagen el pelo, la piel del rostro y el fondo. Con eso estimamos el color y el largo del pelo, si tienes flequillo, y el tono y el subtono de la piel (cálido, frío o neutro). La luz cambia mucho los colores: hazlo con luz natural de frente y corrige el resultado en el plan si no coincide.</p></details>
+        <details><summary>¿Lo puedo usar en mi barbería?</summary><p>Sí. Pon la web en una tablet o un portátil junto al espejo: el cliente se analiza solo, eligen juntos el corte con las fotos de referencia y se lleva la ficha por WhatsApp con el botón «Enviar a mi barbero».</p></details>
         <details><summary>¿Sirve para mujeres?</summary><p>Sí. En «Mujer» verás cortes, peinados y una guía de maquillaje según tu forma de rostro, tu tono de piel, tus ojos y tus labios: base, contorno e iluminador, rubor, sombras y labiales.</p></details>
       </div>
     </div>
@@ -789,126 +816,38 @@ const LARGO = {
   'bob-mandibula': 'medio', 'capas-largas': 'largo', 'pixie': 'corto', 'flequillo-cortina': 'medio', 'lob-asimetrico': 'medio', 'flequillo-lateral-largo': 'largo',
   'media-melena-ondas': 'medio', 'bob-barbilla': 'corto', 'flequillo-recto': 'medio', 'volumen-coronilla': 'medio', 'recogido-mechones': 'largo'
 };
-/* ── Ilustraciones de cortes: frente, perfil y nuca (generadas desde parámetros) ── */
-const PARAM_CORTE = {
-  'tupe-texturizado': { t: .6, l: 'medio', f: 'arriba', tx: 1 }, 'pompadour': { t: .85, l: 'alto', f: 'arriba', at: 1 },
-  'crew-cut': { t: .2, l: 'bajo', f: 'corto' }, 'raya-lateral': { t: .35, l: 'tijera', f: 'no', r: 1 },
-  'french-crop': { t: .3, l: 'medio', f: 'corto', tx: 1 }, 'undercut': { t: .5, l: 'rapado', f: 'no', at: 1 },
-  'faux-hawk': { t: .7, l: 'alto', f: 'cresta', tx: 1 }, 'slick-back': { t: .4, l: 'bajo', f: 'no', at: 1 },
-  'medio-desfilado': { t: .5, l: 'largo', f: 'lado', tx: 1 }, 'flequillo-lateral': { t: .4, l: 'bajo', f: 'lado', tx: 1 },
-  'lados-tijera': { t: .5, l: 'tijera', f: 'no', tx: 1 },
-  'bob-mandibula': { L: 352 }, 'capas-largas': { L: 520, cap: 1 }, 'pixie': { L: 0, f: 'lado' }, 'flequillo-cortina': { L: 470, f: 'cortina' },
-  'lob-asimetrico': { L: 440, as: 1, r: 1 }, 'flequillo-lateral-largo': { L: 470, f: 'lado', r: 1 }, 'media-melena-ondas': { L: 470, on: 1 },
-  'bob-barbilla': { L: 372, v: .3, cap: 1 }, 'flequillo-recto': { L: 470, f: 'recto' }, 'volumen-coronilla': { L: 450, v: .6, cap: 1, r: 1 },
-  'recogido-mechones': { mo: 1 }
+/* ── Tendencias 2026 (barberías y salones) ── */
+Object.assign(CORTES_H, {
+  'taper-bajo': ['Low taper fade', 'Degradado bajo solo en patillas y nuca (del 0 al 2), lados con cuerpo y arriba 4–7 cm con textura.', '3 semanas', 'arcilla mate'],
+  'rizos-degradado': ['Rizos arriba con degradado', 'Degradado medio en los lados y rizos de 5–8 cm arriba, cortados en seco rizo a rizo.', '3 semanas', 'crema para rizos']
+});
+Object.assign(CORTES_M, {
+  'butterfly': ['Butterfly cut', 'Capas cortas alrededor de la cara que se abren hacia fuera y capas largas detrás: parece corto delante y largo atrás.'],
+  'shag-moderno': ['Shag moderno', 'Muchas capas desfiladas con volumen en la coronilla, puntas ligeras y flequillo abierto.'],
+  'bob-recto': ['Bob recto (blunt)', 'Bob a la altura de la mandíbula con corte recto en bloque, sin capas, y puntas pulidas.']
+});
+Object.assign(LARGO, { 'taper-bajo': 'corto', 'rizos-degradado': 'corto', 'butterfly': 'largo', 'shag-moderno': 'medio', 'bob-recto': 'medio' });
+const TODAS = ['ovalada', 'redonda', 'cuadrada', 'rectangular', 'alargada', 'corazon', 'diamante', 'triangular'];
+const TENDENCIAS = {
+  h: [['taper-bajo', TODAS.filter(f => f !== 'redonda'), 'El corte más pedido en las barberías: limpio, versátil y fácil de mantener.'],
+      ['rizos-degradado', ['ovalada', 'redonda', 'cuadrada', 'triangular'], 'Rizos con altura arriba y lados limpios: la tendencia que más crece.']],
+  m: [['butterfly', TODAS, 'Capas que enmarcan la cara: la tendencia número uno en salones.'],
+      ['shag-moderno', ['ovalada', 'cuadrada', 'rectangular', 'alargada', 'corazon', 'diamante'], 'Textura y volumen con muchas capas, de aspecto natural.'],
+      ['bob-recto', ['ovalada', 'alargada', 'rectangular', 'corazon', 'diamante'], 'El bob limpio y en bloque vuelve con fuerza.']]
 };
-let _idg = 0;
-const _P = (x, y) => x.toFixed(1) + ' ' + y.toFixed(1);
-function _arco(cx, cy, rx, ry, a0, a1, n, f) { const o = []; for (let i = 0; i <= n; i++) { const t = i / n, a = (a0 + (a1 - a0) * t) * Math.PI / 180, m = f ? f(t, i) : 1; o.push([cx + Math.cos(a) * rx * m, cy - Math.sin(a) * ry * m]); } return o; }
-function _suave(P) { const n = P.length; let d = 'M' + _P(P[0][0], P[0][1]); for (let i = 0; i < n; i++) { const a = P[(i - 1 + n) % n], b = P[i], c = P[(i + 1) % n], e = P[(i + 2) % n]; d += ' C' + _P(b[0] + (c[0] - a[0]) / 6, b[1] + (c[1] - a[1]) / 6) + ' ' + _P(c[0] - (e[0] - b[0]) / 6, c[1] - (e[1] - b[1]) / 6) + ' ' + _P(c[0], c[1]); } return d + ' Z'; }
-const _poly = P => 'M' + P.map(p => _P(p[0], p[1])).join(' L') + ' Z';
-const PIEL_D = '#f1dfcf', TINTA_D = '#111e2d', TRAZO = 'stroke="#111e2d" stroke-width="5" stroke-linejoin="round"';
-const _pelo = (d, fill = TINTA_D) => `<path d="${d}" fill="${fill}"/>`;
-const _mecha = d => `<path d="${d}" fill="none" stroke="#3a4f6b" stroke-width="3" stroke-linecap="round"/>`;
-const _peine = d => `<path d="${d}" fill="none" stroke="#c69e58" stroke-width="3.5" stroke-linecap="round"/>`;
-const NIVEL = { alto: 245, medio: 268, bajo: 292, rapado: 262 };
-
-/* Bases de cabeza */
-const CAB = {
-  frente: `<ellipse cx="103" cy="268" rx="14" ry="26" fill="${PIEL_D}" ${TRAZO}/><ellipse cx="297" cy="268" rx="14" ry="26" fill="${PIEL_D}" ${TRAZO}/><path d="M168 360 L166 440 L234 440 L232 360 Z" fill="${PIEL_D}" ${TRAZO}/><path d="M30 500 C40 452 100 434 166 428 L234 428 C300 434 360 452 370 500 Z" fill="#154d8c" ${TRAZO}/><ellipse cx="200" cy="255" rx="98" ry="128" fill="${PIEL_D}" ${TRAZO}/><g fill="none" stroke="#111e2d" stroke-linecap="round"><path d="M140 222 Q160 212 181 219" stroke-width="6"/><path d="M219 219 Q240 212 260 222" stroke-width="6"/><path d="M200 252 L193 290 Q200 296 207 290" stroke-width="4"/><path d="M176 324 Q200 338 224 324" stroke-width="5"/></g><circle cx="160" cy="249" r="6" fill="#111e2d"/><circle cx="240" cy="249" r="6" fill="#111e2d"/>`,
-  perfil: `<path d="M140 446 L146 352 L232 372 L234 446 Z" fill="${PIEL_D}" ${TRAZO}/><path d="M40 500 C50 456 110 438 150 436 L236 434 C300 440 350 458 360 500 Z" fill="#154d8c" ${TRAZO}/><path d="M300 150 C326 180 318 208 314 222 L340 268 L314 282 Q322 294 314 304 Q322 316 312 330 Q318 350 300 362 Q262 384 232 372 L146 352 Q80 300 92 220 Q110 118 210 106 Q280 110 300 150 Z" fill="${PIEL_D}" ${TRAZO}/><ellipse cx="178" cy="262" rx="15" ry="25" fill="${PIEL_D}" ${TRAZO}/><path d="M282 214 Q296 208 308 214" fill="none" stroke="#111e2d" stroke-width="6" stroke-linecap="round"/><circle cx="298" cy="236" r="5.5" fill="#111e2d"/>`,
-  nuca: `<path d="M160 350 L158 440 L242 440 L240 350 Z" fill="${PIEL_D}" ${TRAZO}/><path d="M30 500 C40 452 100 434 158 428 L242 428 C300 434 360 452 370 500 Z" fill="#154d8c" ${TRAZO}/><ellipse cx="86" cy="268" rx="14" ry="26" fill="${PIEL_D}" ${TRAZO}/><ellipse cx="314" cy="268" rx="14" ry="26" fill="${PIEL_D}" ${TRAZO}/><ellipse cx="200" cy="236" rx="116" ry="134" fill="${PIEL_D}" ${TRAZO}/>`
-};
-function _degradado(id, y0, y1) { return `<linearGradient id="${id}" x1="0" y1="${y0}" x2="0" y2="${y1}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#111e2d"/><stop offset="1" stop-color="#111e2d" stop-opacity="0"/></linearGradient>`; }
-
-function _hombre(vista, p, id) {
-  const top = 1 + p.t * .42, jag = p.tx ? (t, i) => (t > .15 && t < .85 ? (i % 2 ? 1 : 1.07) : 1) : null;
-  const pico = p.f === 'arriba' ? t => 1 + .3 * Math.exp(-(((t - .4) / .14) ** 2)) : p.f === 'cresta' ? t => 1 + .38 * Math.exp(-(((t - .5) / .08) ** 2)) : () => 1;
-  const yF = NIVEL[p.l] || 0, defs = yF ? _degradado(id, p.l === 'rapado' ? 200 : 214, yF) : '';
-  let A = '', F = '';
-  if (vista === 'frente') {
-    const lineas = { no: [[296, 214], [262, 172], [200, 160], [138, 172], [104, 214]], corto: [[296, 214], [275, 188], [240, 182], [200, 184], [160, 182], [125, 188], [104, 214]], adelante: [[296, 214], [270, 196], [200, 200], [130, 196], [104, 214]], lado: [[296, 214], [270, 176], [222, 168], [172, 186], [132, 214], [112, 238], [104, 214]] };
-    const linea = lineas[p.f] || lineas.no;
-    const cap = _arco(200, 222, 113, 120 * top, 196, -16, 40, (t, i) => pico(t) * (jag ? jag(t, i) : 1)).concat(linea);
-    F = _pelo(p.tx ? _poly(cap) : _suave(cap));
-    const lado = (x0, x1, y1, fill) => `<path d="M${x0} 205 L${x1} 205 L${x1 + (x1 > 200 ? -4 : 4)} ${y1} L${x0} ${y1} Z" fill="${fill}"/>`;
-    if (yF) F += lado(88, 116, yF, `url(#${id})`) + lado(312, 284, yF, `url(#${id})`);
-    if (p.l === 'tijera') F += lado(90, 114, 266, TINTA_D) + lado(310, 286, 266, TINTA_D);
-    if (p.l === 'largo') F += lado(80, 118, 330, TINTA_D) + lado(320, 282, 330, TINTA_D);
-    if (p.r) F += `<path d="M150 170 Q154 140 166 108" fill="none" stroke="#f9f6f2" stroke-width="4"/>`;
-    if (p.at) F += [0, 1, 2].map(i => _peine(`M${160 + i * 36} 168 Q${166 + i * 34} 128 ${184 + i * 28} 104`)).join('');
-  } else if (vista === 'perfil') {
-    const tY = 104 - p.t * 52, fr = p.f === 'arriba' ? [[336, tY + 44], [312, tY + 8]] : p.f === 'cresta' ? [[300, tY + 30]] : p.f === 'corto' ? [[306, 186], [304, 160]] : p.f === 'adelante' ? [[312, 200], [306, 160]] : p.f === 'lado' ? [[308, 196], [306, 160]] : [[296, 158]];
-    const yS = yF ? 232 : p.l === 'tijera' ? 290 : 338;
-    const capP = [[262, 196], [292, 162]].concat(fr, [[262, tY + 2], [200, tY], [140, tY + 18], [100, 176], [88, 230], [92, yS], [120, yS - 4], [156, 236], [206, 220]]);
-    F = _pelo(p.tx ? _poly(capP) : _suave(capP));
-    if (yF) F += `<path d="M88 226 L92 ${yF} Q120 ${yF + 6} 150 ${yF - 14} L160 246 L120 228 Z" fill="url(#${id})"/>`;
-    if (p.at) F += [0, 1].map(i => _peine(`M${290 - i * 6} ${tY + 40 + i * 22} Q${220} ${tY + 10 + i * 22} ${130} ${tY + 40 + i * 26}`)).join('');
-    if (p.tx) F += _mecha(`M${280} ${tY + 30} l14 -14 M${240} ${tY + 14} l12 -14`);
-  } else {
-    const yS = yF ? 238 : p.l === 'tijera' ? 300 : 352;
-    const capN = _arco(200, 236, 120, 136 * (1 + p.t * .22), 186, -6, 30, jag).concat([[318, yS], [270, yS + 8], [200, yS + 12], [130, yS + 8], [82, yS]]);
-    F = _pelo(p.tx ? _poly(capN) : _suave(capN));
-    if (yF) F += `<path d="M86 236 L318 236 L314 ${yF} Q200 ${yF + 26} 90 ${yF} Z" fill="url(#${id})"/>`;
-    if (p.at) F += [0, 1, 2].map(i => _peine(`M${150 + i * 50} 120 Q${160 + i * 40} 180 ${170 + i * 30} 230`)).join('');
-  }
-  return { defs, A, F };
+function fotoCorte(slug, n) { return `<figure class="foto-corte"><img src="cortes/${slug}.jpg" alt="Ejemplo real: ${esc(n)}" loading="lazy"><figcaption>Foto real de referencia</figcaption></figure>`; }
+function peinadoActual(pe) {
+  if (!pe) return '';
+  const fl = pe.flequillo ? ' con flequillo' : '', vo = pe.volumen ? ' y volumen arriba' : '';
+  if (pe.largo === 'muy corto') return 'Muy corto o rapado';
+  if (pe.largo === 'corto') return (modo === 'h' ? 'Corto' : 'Corto, tipo pixie') + fl + vo;
+  if (pe.largo === 'largo medio') return (modo === 'h' ? 'Largo medio' : 'Melena media') + fl + vo;
+  return 'Largo' + fl + vo;
 }
-
-function _mujer(vista, p) {
-  let A = '', F = '';
-  const vol = 1 + (p.v || 0) * .3, L = p.L || 0;
-  const masa = (yB, onda, abre, as) => { const top = _arco(200, 228, 128, 134 * vol, 180, 0, 24), der = [], izq = [];
-    for (let y = 240; y <= yB + (as ? 40 : 0); y += 20) { const w = 128 + (y - 228) * abre; if (y <= yB + (as ? 40 : 0)) der.push([200 + w + onda * Math.sin(y / 26), y]); if (y <= yB) izq.unshift([200 - w - onda * Math.sin(y / 26 + 1), y]); }
-    const base = [[200 + 128 + (yB - 228) * abre, yB + (as ? 50 : 10)], [200, yB + (as ? 30 : 12)], [200 - 128 - (yB - 228) * abre, yB + 10]];
-    return _suave(top.concat(der, base, izq)); };
-  const capas = (yB) => p.cap ? _mecha(`M96 300 Q86 ${yB - 60} 104 ${yB - 10} M304 300 Q314 ${yB - 60} 296 ${yB - 10}`) : '';
-  const ondas = (yB) => p.on ? [0, 1].map(s => _mecha(`M${s ? 314 : 86} 280 q${s ? 16 : -16} 30 0 60 q${s ? -16 : 16} 30 0 60 q${s ? 16 : -16} 30 0 ${Math.max(20, yB - 400)}`)).join('') : '';
-  if (vista === 'frente') {
-    if (p.mo) {
-      A = `<circle cx="200" cy="92" r="40" fill="${TINTA_D}"/>` + _mecha('M178 80 q22 -22 44 0 q-22 20 -44 4');
-      F = _pelo(_suave(_arco(200, 222, 112, 119, 196, -16, 36).concat([[298, 246], [290, 205], [250, 166], [200, 156], [150, 166], [110, 205], [102, 246]]))) + `<path d="M110 212 Q96 262 114 306 M290 212 Q304 262 286 306" fill="none" stroke="#111e2d" stroke-width="4" stroke-linecap="round"/>`;
-    } else if (!L) {
-      F = _pelo(_suave(_arco(200, 222, 113, 124, 196, -16, 36).concat([[300, 268], [288, 214], [262, 178], [214, 170], [166, 188], [128, 220], [112, 246], [100, 268]])));
-    } else {
-      A = _pelo(masa(L, p.on ? 12 : 0, L > 420 ? .07 : .03, p.as)) + capas(L) + ondas(L);
-      const fin = Math.min(L, 374), cx = p.r ? 160 : 200;
-      F = _pelo(_suave(_arco(200, 222, 114, 122 * vol, 192, -12, 36).concat([[310, 300], [302, fin - 12], [288, fin], [284, 300], [276, 215], [248, 170], [cx + 5, 150], [cx - 5, 150], [152, 170], [124, 215], [116, 300], [112, fin], [98, fin - 12], [90, 300]])));
-      F += `<path d="M${cx} 152 L${cx + (p.r ? 6 : 0)} 108" fill="none" stroke="#f9f6f2" stroke-width="4"/>`;
-      if (p.f === 'recto') F += _pelo('M112 160 Q200 120 288 160 L292 206 Q200 214 108 206 Z');
-      if (p.f === 'cortina') F += _pelo('M200 150 Q160 168 128 232 Q140 250 150 262 Q160 200 200 160 Z') + _pelo('M200 150 Q240 168 272 232 Q260 250 250 262 Q240 200 200 160 Z');
-      if (p.f === 'lado') F += _pelo('M250 148 Q170 150 118 236 Q132 246 140 240 Q176 196 262 176 Z');
-    }
-  } else if (vista === 'perfil') {
-    if (p.mo) {
-      F = _pelo(_suave([[262, 196], [294, 158], [262, 112], [200, 102], [140, 118], [100, 176], [90, 232], [120, 248], [156, 236], [206, 220]])) + `<circle cx="84" cy="262" r="38" fill="${TINTA_D}"/>` + _mecha('M290 176 Q300 220 294 262');
-    } else {
-      const yB = L || 300;
-      A = L ? _pelo(_suave([[230, 108 - (p.v || 0) * 30], [150, 112], [92, 180], [78, yB * .62], [84, yB], [124, yB + (p.as ? 30 : 6)], [150, yB - 20], [152, 330], [160, 250], [140, 200]])) + (p.on ? _mecha(`M88 260 q-14 30 0 60 q14 30 0 60`) : '') : '';
-      const fr = p.f === 'recto' ? [[310, 206], [300, 160]] : p.f === 'lado' || p.f === 'cortina' ? [[312, 226], [300, 168]] : [[296, 156]];
-      F = _pelo(_suave([[262, 196]].concat(fr, [[262, 112 - (p.v || 0) * 30], [200, 100 - (p.v || 0) * 34], [140, 114], [100, 176], [92, L ? 260 : 236], [130, L ? 300 : 246], [158, 238], [206, 220]])));
-    }
-  } else {
-    if (p.mo) {
-      F = _pelo(_suave(_arco(200, 236, 120, 138, 186, -6, 30).concat([[316, 300], [200, 318], [84, 300]]))) + `<circle cx="200" cy="322" r="44" fill="${TINTA_D}"/>` + _mecha('M176 312 q24 -26 48 0 q-24 24 -48 6');
-    } else if (!L) {
-      F = _pelo(_suave(_arco(200, 236, 120, 140, 186, -6, 30).concat([[318, 300], [200, 320], [82, 300]])));
-    } else {
-      F = _pelo(masa(L, p.on ? 12 : 0, L > 420 ? .07 : .03, p.as)) + capas(L) + ondas(L) + (p.cap ? _mecha(`M150 200 Q140 ${L - 80} 156 ${L - 20} M250 200 Q260 ${L - 80} 244 ${L - 20}`) : '');
-    }
-  }
-  return { defs: '', A, F };
+function capturarFoto() {
+  try { const c = document.createElement('canvas'), w = 360; c.width = w; c.height = Math.round(w * vid.videoHeight / vid.videoWidth);
+    const o = c.getContext('2d'); o.translate(w, 0); o.scale(-1, 1); o.drawImage(vid, 0, 0, w, c.height); return c.toDataURL('image/jpeg', .82); } catch (e) { return ''; }
 }
-
-function vistasCorte(slug) {
-  const p = PARAM_CORTE[slug]; if (!p) return '';
-  const esH = !!CORTES_H[slug];
-  return `<figure class="vistas" aria-label="Ilustración del corte: frente, perfil y nuca">${['frente', 'perfil', 'nuca'].map(v => {
-    const id = 'dg' + (++_idg), r = esH ? _hombre(v, p, id) : _mujer(v, p);
-    return `<div><svg viewBox="0 36 400 464" aria-hidden="true"><defs>${r.defs}</defs>${r.A}${CAB[v]}${r.F}</svg><small>${v === 'nuca' ? 'Nuca' : v[0].toUpperCase() + v.slice(1)}</small></div>`;
-  }).join('')}</figure>`;
-}
-
 const NOMBRE_LARGO = { corto: 'Corto', medio: 'Largo medio', largo: 'Largo' };
 const ETIQ = {
   plan: { crecer: 'Dejarlo crecer', mantener: 'Mantener el largo', corto: 'Más corto', nose: 'Explorando opciones' },
@@ -1055,13 +994,22 @@ $('#formPlan').addEventListener('submit', e => {
 $('#saltar').addEventListener('click', () => { const x = analisisActual && analisisActual.extra && analisisActual.extra.piel; pref = { plan: '', pelo: '', tiempo: '', barba: '', piel: x ? x.prof : '', subtono: x ? x.sub : '' }; renderFicha(true); });
 $('#editarPlan').addEventListener('click', () => $('#plan').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }));
 $('#imprimir').addEventListener('click', () => print());
+$('#whatsapp').addEventListener('click', () => {
+  const F = FORMAS[formaActual], lib = modo === 'h' ? CORTES_H : CORTES_M, c = ordenarCortes(F[modo].cortes)[0][0];
+  const lineas = ['Mi ficha de Espejo', `Rostro: ${F.nombre}`, `Corte: ${lib[c][0]} — ${lib[c][1]}`];
+  if (modo === 'h' && !$('#bloqueBarba').hidden) { const b = F.h.barba[0][0]; lineas.push(`Barba: ${BARBAS[b][0]} — ${BARBAS[b][1]}`); }
+  if (pref.subtono) lineas.push(`Color que me favorece: ${TINTE[pref.subtono].map(t => t[0]).join(', ')}`);
+  lineas.push(location.href.split('#')[0]);
+  open('https://wa.me/?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
+});
 
 function ordenarCortes(cortes) {
   const peso = { crecer: { largo: 0, medio: 1, corto: 2 }, corto: { corto: 0, medio: 1, largo: 2 } }[pref.plan];
   return peso ? cortes.slice().sort((a, b) => peso[LARGO[a[0]]] - peso[LARGO[b[0]]]) : cortes;
 }
-function tagsCorte(slug, i) {
+function tagsCorte(slug, i, tend) {
   const t = [`<li class="l">${NOMBRE_LARGO[LARGO[slug]]}</li>`];
+  if (tend) t.unshift('<li>Tendencia 2026</li>');
   if (i === 0 && pref.plan === 'crecer' && LARGO[slug] !== 'corto') t.unshift('<li>Tu meta de largo</li>');
   if (i === 0 && pref.plan === 'corto') t.unshift('<li>El más práctico</li>');
   if (i === 0 && pref.plan === 'mantener') t.unshift('<li>Mejor forma con tu largo</li>');
@@ -1086,15 +1034,27 @@ function renderFicha(desplazar) {
 
   let i = 0;
   const cortes = ordenarCortes(g.cortes);
-  $('#listaCortes').innerHTML = cortes.map(([slug, por], k) => {
+  const tendF = TENDENCIAS[modo].filter(t => t[1].includes(forma)).slice(0, 2).map(t => [t[0], t[2], 1]);
+  $('#listaCortes').innerHTML = cortes.concat(tendF).map(([slug, por, tend], k) => {
     if (modo === 'h') {
       const [n, pide, mant, prod] = CORTES_H[slug];
-      return `<li class="rec corte" style="--i:${i++}">${vistasCorte(slug)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k)}<p class="por">${por}</p><p class="pide"><b>Pídele al barbero:</b> ${pide}</p><p class="meta">Mantenimiento cada ${mant} · Producto: ${prod}</p></div></li>`;
+      return `<li class="rec corte" style="--i:${i++}">${fotoCorte(slug, n)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k, tend)}<p class="por">${por}</p><p class="pide"><b>Pídele al barbero:</b> ${pide}</p><p class="meta">Mantenimiento cada ${mant} · Producto: ${prod}</p></div></li>`;
     }
     const [n, pide] = CORTES_M[slug];
-    return `<li class="rec corte" style="--i:${i++}">${vistasCorte(slug)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k)}<p class="por">${por}</p><p class="pide"><b>Pide en el salón:</b> ${pide}</p></div></li>`;
+    return `<li class="rec corte" style="--i:${i++}">${fotoCorte(slug, n)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k, tend)}<p class="por">${por}</p><p class="pide"><b>Pide en el salón:</b> ${pide}</p></div></li>`;
   }).join('');
 
+  const pe = a && a.extra && a.extra.pelo;
+  $('#secCambio').hidden = !pe;
+  if (pe) {
+    const meta = cortes[0][0], nm = (modo === 'h' ? CORTES_H : CORTES_M)[meta][0];
+    const orden = { corto: 0, medio: 1, largo: 2 }, hoy = pe.largo === 'largo' ? 'largo' : pe.largo === 'largo medio' ? 'medio' : 'corto', va = LARGO[meta];
+    const txt = orden[va] === orden[hoy] ? 'Mismo largo, nueva forma: tu barbero solo tiene que dar forma y no pierdes largo.'
+      : orden[va] > orden[hoy] ? 'Necesitas dejarlo crecer unos meses: elige «Dejarlo crecer» en tu plan y te damos la ruta por etapas.'
+      : 'Es un cambio a más corto: se consigue en una sola visita.';
+    $('#cambio').innerHTML = `<figure>${a.extra.foto ? `<img src="${a.extra.foto}" alt="Tu foto de hoy">` : ''}<figcaption>Hoy<b>${peinadoActual(pe)}</b></figcaption></figure><span class="flecha" aria-hidden="true">→</span>` +
+      `<figure><img src="cortes/${meta}.jpg" alt="${esc(nm)}"><figcaption>Te sugerimos<b>${nm}</b></figcaption></figure><p>${txt}</p>`;
+  }
   const tip = TIP_PELO[pref.pelo];
   $('#avisoPelo').hidden = !tip;
   if (tip) $('#avisoPelo').innerHTML = `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 14v9M16 9v1"/></svg><div><b>${tip[0]}</b>${tip[1]}</div>`;
@@ -1375,6 +1335,7 @@ function recoger(cara, k) {
   muestras = null; poste.classList.remove('activo'); btnAnalizar.disabled = false;
   const r = clasificar(med.slice(0, 4));
   r.extra = rasgos(med);
+  r.extra.foto = capturarFoto();
   msg('Leyendo tu pelo y tu tono de piel…');
   leerPeloPiel(cara).then(pp => {
     if (pp) Object.assign(r.extra, pp);
@@ -1410,6 +1371,10 @@ addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 })();
 
 renderPeinados();
+$('#gridTend').innerHTML = ['h', 'm'].flatMap(g => TENDENCIAS[g].map(([s, fs, d]) => {
+  const n = (g === 'h' ? CORTES_H : CORTES_M)[s][0];
+  return `<article><img src="cortes/${s}.jpg" alt="Ejemplo real: ${esc(n)}" loading="lazy"><div><h3>${n}</h3><p>${d}</p><small>${g === 'h' ? 'Hombre' : 'Mujer'} · Va con: ${fs.map(f => FORMAS[f].nombre.toLowerCase()).join(', ')}</small></div></article>`;
+})).join('');
 
 /* ── Movimiento (capa GSAP; sin ella la web se ve completa y estática) ── */
 (function () {

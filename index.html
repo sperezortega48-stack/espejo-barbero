@@ -129,6 +129,25 @@ h1 em{font-style:normal;color:var(--rojo)}
 @keyframes imprimir{from{clip-path:inset(0 0 100% 0);transform:translateY(-24px)}to{clip-path:inset(-40px -40px -70px -40px);transform:none}}
 @keyframes entra{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
+/* ── Peinados ── */
+.peinados{padding-block:clamp(48px,8vw,110px);border-top:1px solid var(--linea)}
+.pz-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px 40px;margin-bottom:clamp(24px,4vw,48px)}
+.pz-cab h2{font-size:clamp(2.6rem,6vw,5rem)}
+.pz-cab p{max-width:42ch;color:var(--suave)}
+.pz-lista{list-style:none;padding:0}
+.pz{display:grid;grid-template-columns:110px 1fr;gap:16px 22px;padding-block:26px;border-top:1px solid var(--linea)}
+.pz-pasos,.pz>.tut{grid-column:1/-1}
+.pz>.tut{justify-self:start}
+@media (min-width:900px){.pz{grid-template-columns:170px 1fr 1.25fr auto;gap:28px}.pz-pasos,.pz>.tut{grid-column:auto}}
+.pz-foto{position:relative;aspect-ratio:4/5;background:var(--tinta);color:var(--laton);display:grid;place-items:center;overflow:clip;border-radius:80px 80px 6px 6px}
+.pz-foto span{font:700 3.2rem/1 var(--display)}
+.pz-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pz h3{font-size:clamp(1.7rem,3vw,2.4rem)}
+.pz .meta{margin-top:8px;font-size:.92rem;color:var(--suave)}
+.pz-pasos{padding-left:1.2em}
+.pz-pasos li{padding-block:3px}
+.pz-pasos li::marker{font-weight:700;color:var(--rojo)}
+
 /* ── Tutoriales y privacidad ── */
 .bloque{padding-block:clamp(48px,8vw,110px);border-top:1px solid var(--linea);display:grid;gap:clamp(24px,4vw,64px)}
 @media (min-width:900px){.bloque{grid-template-columns:1fr 1.2fr}}
@@ -162,7 +181,7 @@ h1 em{font-style:normal;color:var(--rojo)}
 <div class="wrap">
   <header class="top">
     <a class="marca" href="#">Espejo<b>.</b></a>
-    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#tutoriales">Tutoriales</a><a href="#privacidad">Privacidad</a></nav>
+    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#peinados">Peinados</a><a href="#tutoriales">Tutoriales</a><a href="#privacidad">Privacidad</a></nav>
   </header>
 
   <main>
@@ -232,10 +251,18 @@ h1 em{font-style:normal;color:var(--rojo)}
       </div>
     </section>
 
+    <section class="peinados" id="peinados">
+      <div class="pz-cab">
+        <h2>Peinados</h2>
+        <p id="pzIntro">Cómo peinarte cada día: tiempo, producto y pasos, con su tutorial en vídeo.</p>
+      </div>
+      <ol class="pz-lista" id="listaPeinados"></ol>
+    </section>
+
     <section class="bloque" id="tutoriales">
       <h2>Tutoriales en vídeo</h2>
       <div>
-        <p>Cada corte y cada barba recomendados tienen su tutorial paso a paso, con el botón <b>Ver tutorial</b> de la ficha.</p>
+        <p>Cada corte, barba y peinado tiene su tutorial paso a paso, con el botón <b>Ver tutorial</b>.</p>
         <p>Los vídeos se producen con <b>HyperFrames</b>: cada tutorial es una composición HTML (ilustraciones, textos y tiempos de cada paso) que HyperFrames renderiza a MP4. El archivo resultante se guarda junto a esta página como <code>tutoriales/&lt;estilo&gt;.mp4</code>, por ejemplo <code>tutoriales/tupe-texturizado.mp4</code>.</p>
         <div class="flujo" aria-label="Proceso de producción"><span>Composición HTML</span><i>/</i><span>HyperFrames</span><i>/</i><span>MP4</span><i>/</i><span>Esta web</span></div>
       </div>
@@ -332,6 +359,33 @@ const CORTES_M = {
   'recogido-mechones': ['Recogido con mechones sueltos', 'Moño bajo con mechones sueltos que enmarcan la cara.']
 };
 
+/* ── Peinados: [nombre, tiempo, dificultad, producto, pasos] ── */
+const PEINADOS = {
+  h: {
+    'texturizado-mate': ['Texturizado mate', '5 min', 'Fácil', 'polvo texturizante o arcilla mate', ['Seca con toalla hasta dejar el pelo húmedo, no mojado.', 'Sécalo con secador levantando la raíz con los dedos.', 'Calienta arcilla del tamaño de una lenteja entre las palmas.', 'Reparte de atrás hacia delante y define mechones con la punta de los dedos.']],
+    'hacia-atras-brillo': ['Hacia atrás con brillo', '7 min', 'Media', 'pomada al agua y peine fino', ['Aplica la pomada con el pelo húmedo, de raíz a puntas.', 'Peina hacia atrás con peine fino, empezando por el frente.', 'Marca los laterales hacia atrás y abajo, pegados a la cabeza.', 'Repasa con las manos para suavizar las líneas del peine.']],
+    'raya-lateral-peinada': ['Raya lateral peinada', '6 min', 'Media', 'crema de peinado y peine', ['Busca tu raya natural siguiendo el remolino.', 'Márcala con la punta del peine con el pelo húmedo.', 'Seca el lado largo hacia el lado contrario con cepillo redondo.', 'Fija con una capa fina de crema.']],
+    'crop-desordenado': ['Crop desordenado', '4 min', 'Fácil', 'spray de sal marina', ['Aplica spray de sal sobre el pelo húmedo.', 'Seca hacia delante revolviendo con los dedos.', 'Termina con un poco de polvo en la raíz para dar volumen.']],
+    'quiff-secador': ['Quiff con secador', '10 min', 'Media', 'mousse, cepillo redondo y cera', ['Aplica mousse en la raíz del frente.', 'Con el cepillo redondo, seca el frente hacia arriba y atrás.', 'Termina con aire frío para fijar la forma.', 'Define las puntas con cera ligera.']],
+    'rizos-definidos-h': ['Rizos definidos', '8 min', 'Fácil', 'crema para rizos y difusor', ['Aplica crema para rizos con el pelo empapado.', 'Arruga los mechones con las manos de abajo hacia arriba.', 'Seca con difusor a temperatura media, sin tocar.', 'Ya seco, separa un poco los rizos con los dedos.']]
+  },
+  m: {
+    'ondas-playeras': ['Ondas playeras', '15 min', 'Fácil', 'plancha y spray texturizante', ['Divide el pelo en mechones de unos 3 cm.', 'Gira cada mechón con la plancha, alternando la dirección.', 'Deja las puntas rectas, sin plancha.', 'Abre las ondas con los dedos y aplica spray texturizante.']],
+    'liso-pulido': ['Liso pulido', '20 min', 'Media', 'protector térmico, cepillo redondo y sérum', ['Aplica protector térmico con el pelo húmedo.', 'Seca por secciones con cepillo redondo, tensando de raíz a puntas.', 'Pasa la plancha en mechones finos una sola vez.', 'Termina con una gota de sérum en medios y puntas.']],
+    'cola-alta-pulida': ['Cola alta pulida', '8 min', 'Fácil', 'cepillo de cerdas, gel ligero y goma', ['Cepilla todo el pelo hacia la coronilla.', 'Alisa la superficie con una capa fina de gel.', 'Sujeta con goma y envuelve un mechón para ocultarla.', 'Fija el mechón con una horquilla por debajo.']],
+    'mono-bajo': ['Moño bajo despeinado', '10 min', 'Fácil', 'horquillas y spray', ['Recoge el pelo en una cola baja y floja.', 'Gira la cola sobre sí misma y enróllala en la base.', 'Sujeta con 4–6 horquillas alrededor.', 'Saca mechones finos junto a la cara.']],
+    'trenza-raiz': ['Trenza de raíz', '12 min', 'Media', 'peine de púas y goma', ['Toma tres mechones en la parte alta de la cabeza.', 'Crúzalos añadiendo pelo de los lados en cada paso.', 'Sigue hasta la nuca y termina con una trenza normal.', 'Afloja los bordes con los dedos para dar volumen.']],
+    'media-cola': ['Media cola', '5 min', 'Fácil', 'goma fina y spray', ['Separa la mitad superior del pelo, de oreja a oreja.', 'Recógela en la coronilla con una goma fina.', 'Da volumen tirando suavemente de la parte de arriba.', 'Deja el resto suelto, con ondas o liso.']],
+    'rizos-definidos-m': ['Rizos definidos', '15 min', 'Fácil', 'crema para rizos, gel y difusor', ['Aplica crema y luego gel con el pelo empapado, por secciones.', 'Peina con los dedos y arruga de abajo hacia arriba.', 'Seca con difusor sin tocar hasta que esté seco.', 'Rompe la capa del gel apretando suavemente los rizos.']]
+  }
+};
+function renderPeinados() {
+  document.getElementById('listaPeinados').innerHTML = Object.entries(PEINADOS[modo]).map(([slug, [n, t, dif, prod, pasos]]) =>
+    `<li class="pz"><div class="pz-foto"><span>${n[0]}</span><img src="tutoriales/${slug}.jpg" alt="${esc(n)}" loading="lazy" onerror="this.remove()"></div>` +
+    `<div><h3>${n}</h3><p class="meta">${t} · ${dif} · Necesitas: ${prod}</p></div>` +
+    `<ol class="pz-pasos">${pasos.map(p => `<li>${p}</li>`).join('')}</ol>${itemTut(slug, n)}</li>`).join('');
+}
+
 /* ── Formas: prototipo [largo, frente, mandíbula, mentón] ÷ ancho de pómulos.
    Centro calibrado con el modelo canónico de MediaPipe (rostro promedio = ovalada). ── */
 const FORMAS = {
@@ -415,8 +469,10 @@ radios.forEach(r => { if (r.checked) modo = r.value; });   // Safari restaura el
 radios.forEach(r => r.addEventListener('change', () => {
   if (!r.checked) return;
   modo = r.value;
+  renderPeinados();
   if (formaActual) mostrar(formaActual, undefined, true);
 }));
+renderPeinados();
 
 /* ── Ficha de recomendaciones ── */
 function itemTut(slug, nombre) { return `<button type="button" class="tut" data-slug="${slug}" data-nombre="${esc(nombre)}">Ver tutorial</button>`; }

@@ -1006,9 +1006,16 @@ $('#whatsapp').addEventListener('click', () => {
   open('https://wa.me/?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
 });
 
+function largoHoy() {
+  const pe = analisisActual && analisisActual.extra && analisisActual.extra.pelo;
+  return !pe ? '' : pe.largo === 'largo' ? 'largo' : pe.largo === 'largo medio' ? 'medio' : 'corto';
+}
 function ordenarCortes(cortes) {
+  const O = { corto: 0, medio: 1, largo: 2 };
   const peso = { crecer: { largo: 0, medio: 1, corto: 2 }, corto: { corto: 0, medio: 1, largo: 2 } }[pref.plan];
-  return peso ? cortes.slice().sort((a, b) => peso[LARGO[a[0]]] - peso[LARGO[b[0]]]) : cortes;
+  if (peso) return cortes.slice().sort((a, b) => peso[LARGO[a[0]]] - peso[LARGO[b[0]]]);
+  const hoy = largoHoy();   // sin plan: primero lo que se puede hacer hoy con el largo actual
+  return hoy ? cortes.slice().sort((a, b) => (O[LARGO[a[0]]] > O[hoy]) - (O[LARGO[b[0]]] > O[hoy]) || Math.abs(O[LARGO[a[0]]] - O[hoy]) - Math.abs(O[LARGO[b[0]]] - O[hoy])) : cortes;
 }
 function tagsCorte(slug, i, tend) {
   const t = [`<li class="l">${NOMBRE_LARGO[LARGO[slug]]}</li>`];

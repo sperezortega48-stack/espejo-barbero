@@ -194,6 +194,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .op input:checked+span small{color:var(--humo)}
 .op input:focus-visible+span{outline:3px solid var(--rojo);outline-offset:3px}
 .op:active span{scale:.98}
+.afinar{margin:0 0 34px;border-top:1px solid var(--linea);padding-top:18px}
+.afinar summary{cursor:pointer;font-weight:700;margin-bottom:22px}
 .plan-acc{display:flex;flex-wrap:wrap;align-items:center;gap:22px;padding-top:10px}
 
 /* ── Ficha ── */
@@ -517,6 +519,13 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
           <label class="op"><input type="radio" name="plan" value="corto"><span><b>Llevarlo más corto</b><small>Busco algo más práctico y fresco</small></span></label>
           <label class="op"><input type="radio" name="plan" value="nose"><span><b>No lo tengo claro</b><small>Enséñame las opciones</small></span></label>
         </div></fieldset>
+        <fieldset class="q" id="qBarba"><legend>¿Y la barba?</legend><div class="ops">
+          <label class="op"><input type="radio" name="barba" value="crecer"><span><b>Dejarla crecer</b><small>Quiero más barba</small></span></label>
+          <label class="op"><input type="radio" name="barba" value="mantener"><span><b>Mantenerla</b><small>Darle mejor forma</small></span></label>
+          <label class="op"><input type="radio" name="barba" value="afeitar"><span><b>Prefiero afeitado</b><small>Cara limpia</small></span></label>
+          <label class="op"><input type="radio" name="barba" value="poca"><span><b>Me crece poca</b><small>Con zonas despobladas</small></span></label>
+        </div></fieldset>
+        <details class="afinar"><summary>Afinar más (opcional)</summary>
         <fieldset class="q"><legend>Tu tipo de pelo</legend><div class="ops">
           <label class="op"><input type="radio" name="pelo" value="liso"><span><b>Liso</b><small>Cae recto, sin forma propia</small></span></label>
           <label class="op"><input type="radio" name="pelo" value="ondulado"><span><b>Ondulado</b><small>Hace ondas en forma de S</small></span></label>
@@ -540,12 +549,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
           <label class="op"><input type="radio" name="tiempo" value="medio"><span><b>5 a 10 minutos</b><small>Algo de producto y secador</small></span></label>
           <label class="op"><input type="radio" name="tiempo" value="largo"><span><b>Me gusta peinarme</b><small>Disfruto el ritual</small></span></label>
         </div></fieldset>
-        <fieldset class="q" id="qBarba"><legend>¿Y la barba?</legend><div class="ops">
-          <label class="op"><input type="radio" name="barba" value="crecer"><span><b>Dejarla crecer</b><small>Quiero más barba</small></span></label>
-          <label class="op"><input type="radio" name="barba" value="mantener"><span><b>Mantenerla</b><small>Darle mejor forma</small></span></label>
-          <label class="op"><input type="radio" name="barba" value="afeitar"><span><b>Prefiero afeitado</b><small>Cara limpia</small></span></label>
-          <label class="op"><input type="radio" name="barba" value="poca"><span><b>Me crece poca</b><small>Con zonas despobladas</small></span></label>
-        </div></fieldset>
+        </details>
         <div class="plan-acc"><button class="btn" type="submit" data-magnet>Ver mi ficha</button><button class="enlace" type="button" id="saltar">Saltar y ver todo</button></div>
       </form>
     </div>
@@ -566,7 +570,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
       </aside>
       <div class="recs">
         <section id="secCambio" hidden><h3>Tu cambio</h3><div class="cambio" id="cambio"></div></section>
-        <section><h3>Cortes para ti</h3><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol></section>
+        <section><h3>Cortes para ti</h3><div class="aviso" id="avisoFade" hidden></div><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol></section>
         <section id="bloqueBarba"><h3>Barba</h3><div class="aviso" id="avisoBarba" hidden></div><ol class="lista" id="listaBarba"></ol></section>
         <section id="secColor" hidden><h3>Color de pelo que te favorece</h3><div id="color"></div></section>
         <section id="secMaq" hidden><h3>Tu maquillaje</h3><div class="maq" id="maquillaje"></div></section>
@@ -830,6 +834,8 @@ Object.assign(CORTES_M, {
   'bob-recto': ['Bob recto (blunt)', 'Bob a la altura de la mandíbula con corte recto en bloque, sin capas, y puntas pulidas.']
 });
 Object.assign(LARGO, { 'taper-bajo': 'corto', 'rizos-degradado': 'corto', 'butterfly': 'largo', 'shag-moderno': 'medio', 'bob-recto': 'medio' });
+const FADES = { low: ['Low fade', 'empieza justo encima de la oreja y en la nuca, del 0 al 2; deja los lados con cuerpo'], mid: ['Mid fade', 'empieza a la altura de la sien, del 0 al 2; el más versátil'], high: ['High fade', 'empieza en lo alto de los lados, del 0 (o a piel) al 2; alarga la cara'], taper: ['Taper', 'solo en patillas y nuca; el resto de los lados a tijera o máquina 3'] };
+const FADE_FORMA = { ovalada: 'mid', redonda: 'high', cuadrada: 'mid', rectangular: 'low', alargada: 'low', corazon: 'taper', diamante: 'low', triangular: 'taper' };
 const TODAS = ['ovalada', 'redonda', 'cuadrada', 'rectangular', 'alargada', 'corazon', 'diamante', 'triangular'];
 const TENDENCIAS = {
   h: [['taper-bajo', TODAS.filter(f => f !== 'redonda'), 'El corte más pedido en las barberías: limpio, versátil y fácil de mantener.'],
@@ -1065,6 +1071,8 @@ function renderFicha(desplazar) {
     $('#cambio').innerHTML = `<figure>${a.extra.foto ? `<img src="${a.extra.foto}" alt="Tu foto de hoy">` : ''}<figcaption>Hoy<b>${peinadoActual(pe)}</b></figcaption></figure><span class="flecha" aria-hidden="true">→</span>` +
       `<figure><img src="cortes/${meta}.jpg" alt="${esc(nm)}"><figcaption>Te sugerimos<b>${nm}</b></figcaption></figure><p>${txt}</p>`;
   }
+  $('#avisoFade').hidden = modo !== 'h';
+  if (modo === 'h') { const fd = FADES[FADE_FORMA[forma]]; $('#avisoFade').innerHTML = `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 26h20M8 20h16M10 14h12M12 8h8"/></svg><div><b>Tu degradado: ${fd[0]}</b>Pídelo así: ${fd[1]}. Combínalo con el corte que elijas. Variantes: skin fade (a piel), burst fade (en semicírculo alrededor de la oreja) y drop fade (baja detrás de la oreja).</div>`; }
   const tip = TIP_PELO[pref.pelo];
   $('#avisoPelo').hidden = !tip;
   if (tip) $('#avisoPelo').innerHTML = `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 14v9M16 9v1"/></svg><div><b>${tip[0]}</b>${tip[1]}</div>`;

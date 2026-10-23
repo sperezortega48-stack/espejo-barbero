@@ -413,6 +413,16 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .tend.claro article{background:var(--blanco);box-shadow:0 18px 40px -30px rgba(17,30,45,.45)}
 .tend.claro p{color:var(--suave)}
 .tend.claro small{color:var(--rojo)}
+.guia-ovalo{position:absolute;left:50%;top:47%;width:56%;aspect-ratio:3/4;transform:translate(-50%,-50%);border:3px dashed rgba(227,199,143,.85);border-radius:50%;pointer-events:none;transition:border-color .3s}
+.guia-ovalo.ok{border-style:solid;border-color:#5ec27a}
+.guia-ovalo[hidden]{display:none}
+.duda{background:var(--blanco);border:2px solid var(--laton);border-radius:16px;padding:20px 22px;margin-bottom:34px}
+.duda[hidden]{display:none}
+.duda-ops{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.duda-op{display:flex;flex-direction:column;align-items:center;gap:6px;border:1.5px solid var(--linea);background:var(--papel);border-radius:14px;padding:12px 18px;cursor:pointer;font-weight:700}
+.duda-op svg{width:70px;height:80px;color:var(--tinta)}
+.duda-op.on{border-color:var(--tinta);background:var(--tinta);color:var(--papel)}
+.duda-op.on svg{color:var(--laton-2)}
 .intro [data-intro]{visibility:hidden}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
@@ -486,6 +496,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <div class="marco">
           <video id="vid" playsinline muted></video>
           <canvas id="lienzo" aria-hidden="true"></canvas>
+          <div class="guia-ovalo" id="guia" aria-hidden="true" hidden></div>
           <div class="vacio" id="vacio">
             <svg viewBox="0 0 100 120" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M50 8c-22 0-34 17-34 40 0 30 16 58 34 64 18-6 34-34 34-64 0-23-12-40-34-40Z"/><path d="M34 52h8M58 52h8M46 74c3 3 5 3 8 0" stroke-linecap="round"/><path d="M16 48h68M22 78h56M50 8v104" stroke-dasharray="2 4" opacity=".6"/></svg>
             <p>Espejo apagado</p>
@@ -503,14 +514,14 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
       <div class="panel">
         <span class="kicker">El espejo</span>
         <h2 data-lines>Mírate de frente.</h2>
-        <p>Pulsa «Encender cámara» debajo del espejo y colócate dentro del marco. Cuando las tres comprobaciones se encienden, el análisis empieza solo; si algo falla, puedes hacerlo a mano.</p>
+        <p>Pulsa «Encender cámara» debajo del espejo. Te iremos diciendo si debes acercarte, alejarte, centrarte, subir la barbilla o buscar mejor luz; cuando todo esté en verde, el análisis empieza solo.</p>
         <fieldset class="modo">
           <legend>Recomendaciones para</legend>
           <label><input type="radio" name="modo" value="h" checked><span>Hombre</span></label>
           <label><input type="radio" name="modo" value="m"><span>Mujer</span></label>
         </fieldset>
         <ul class="checks" aria-label="Comprobaciones">
-          <li id="ckDist">Distancia</li><li id="ckFrente">De frente</li><li id="ckNivel">Cabeza recta</li>
+          <li id="ckDist">Distancia</li><li id="ckFrente">De frente</li><li id="ckNivel">Cabeza recta</li><li id="ckIncl">Barbilla recta</li><li id="ckLuz">Buena luz</li>
         </ul>
         <div class="hud" aria-label="Medidas en vivo">
           <div><small>Largo ÷ pómulos</small><b id="hR">—</b></div>
@@ -532,6 +543,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
         <div><span class="kicker">Tu plan</span><h2>¿Qué tienes planeado?</h2></div>
         <p id="planSub">Ya sabemos qué le favorece a tu cara. Cuéntanos qué buscas y afinamos la ficha.</p>
       </header>
+      <div class="duda" id="duda" hidden></div>
       <form id="formPlan">
         <fieldset class="q"><legend>Con tu pelo, en los próximos meses…</legend><div class="ops">
           <label class="op"><input type="radio" name="plan" value="crecer"><span><b>Dejarlo crecer</b><small>Quiero más largo y llevar bien la etapa intermedia</small></span></label>
@@ -1018,7 +1030,18 @@ function peinadosPara() {
 }
 
 /* ── Elegir forma → plan → ficha ── */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-duda]'); if (!b) return;
+  formaActual = b.dataset.duda;
+  $$('.duda-op').forEach(x => x.classList.toggle('on', x === b));
+  $('#planSub').textContent = `Elegiste rostro ${FORMAS[formaActual].nombre.toLowerCase()}. Cuéntanos qué buscas y afinamos la ficha.`;
+});
 function elegirForma(forma, analisis) {
+  const dz = $('#duda');
+  if (analisis && analisis.dudosa) {
+    dz.hidden = false;
+    dz.innerHTML = `<p>Tu rostro está entre <b>${FORMAS[analisis.forma].nombre}</b> y <b>${FORMAS[analisis.segunda].nombre}</b>. ¿Cuál se parece más a ti?</p><div class="duda-ops">${[analisis.forma, analisis.segunda].map((f, n) => `<button type="button" class="duda-op${n ? '' : ' on'}" data-duda="${f}"><svg viewBox="-65 -8 130 146" aria-hidden="true">${silueta(FORMAS[f].p)}</svg>${FORMAS[f].nombre}</button>`).join('')}</div>`;
+  } else dz.hidden = true;
   formaActual = forma; analisisActual = analisis;
   $('#planSub').textContent = `Tu rostro es ${FORMAS[forma].nombre.toLowerCase()}: ya sabemos qué te favorece. Cuéntanos qué buscas y afinamos la ficha.`;
   const ex = analisis && analisis.extra;
@@ -1216,19 +1239,82 @@ function medir(c) {
   const q = desproyectar(c), d = (a, b) => Math.hypot(q[a][0] - q[b][0], q[a][1] - q[b][1]), C = d(P.cl, P.cr);
   return [d(P.top, P.chin) / C, d(P.fl, P.fr) / C, d(P.jl, P.jr) / C, d(P.ml, P.mr) / C];
 }
+const luzCv = document.createElement('canvas'), luzCx = luzCv.getContext('2d', { willReadFrequently: true });
+let luzActual = { ok: true, msg: '' };
+function medirLuz(c) {
+  try {
+    const w = 96, hh = Math.round(96 * vid.videoHeight / vid.videoWidth); luzCv.width = w; luzCv.height = hh; luzCx.drawImage(vid, 0, 0, w, hh);
+    const Y = i => { const x = Math.round(c[i].x * w), y = Math.round(c[i].y * hh), d = luzCx.getImageData(Math.max(0, x - 1), Math.max(0, y - 1), 3, 3).data; let s = 0; for (let k = 0; k < d.length; k += 4) s += .299 * d[k] + .587 * d[k + 1] + .114 * d[k + 2]; return s / (d.length / 4); };
+    const izq = (Y(50) + Y(118)) / 2, der = (Y(280) + Y(347)) / 2, m = (izq + der) / 2;
+    luzActual = m < 60 ? { ok: false, msg: 'Hay poca luz: ponte frente a una ventana o una lámpara.' }
+      : m > 228 ? { ok: false, msg: 'Hay demasiada luz o contraluz: evita tener una ventana detrás.' }
+      : Math.abs(izq - der) > 45 ? { ok: false, msg: 'La luz te da de un solo lado: gírate hacia la luz.' } : { ok: true, msg: '' };
+  } catch (e) { luzActual = { ok: true, msg: '' }; }
+}
 function chequeos(c) {
+  const W = cv.width, H = cv.height, corto = Math.min(W, H), ancho = dist(c, P.cl, P.cr) / corto;
   const a = dist(c, P.nose, P.cl), b = dist(c, P.nose, P.cr);
   const [x1, y1] = px(c, P.el), [x2, y2] = px(c, P.er);
-  return {
-    dist: dist(c, P.cl, P.cr) >= cv.width * .22,
+  // inclinación arriba/abajo con la profundidad z: + = mirando hacia abajo
+  const incl = Math.atan2((c[P.chin].z - c[P.top].z) * W, (c[P.chin].y - c[P.top].y) * H) * 180 / Math.PI - 7;   // el modelo marca ~+7° con la cara de frente
+  const cerca = ancho >= .3, lejos = ancho <= .66;
+  const centro = Math.abs(c[P.nose].x - .5) < .17 && Math.abs(c[P.nose].y - .5) < .2;
+  return { ancho, incl, cerca, lejos, centro, dist: cerca && lejos && centro,
     frente: Math.min(a, b) / Math.max(a, b) >= .8,
-    nivel: Math.atan2(Math.abs(y2 - y1), Math.abs(x2 - x1)) * 180 / Math.PI <= 7
-  };
+    nivel: Math.atan2(Math.abs(y2 - y1), Math.abs(x2 - x1)) * 180 / Math.PI <= 7,
+    inclOk: Math.abs(incl) <= 13, luz: luzActual.ok };
+}
+function consejo(k, conLuz = true) {
+  if (!k) return 'No veo tu cara: colócate dentro del óvalo del espejo.';
+  if (!k.cerca) return 'Para un mejor reconocimiento, acércate un poco a la cámara.';
+  if (!k.lejos) return 'Para un mejor reconocimiento, aléjate un poco de la cámara.';
+  if (!k.centro) return 'Centra tu cara dentro del óvalo.';
+  if (!k.frente) return 'Gira la cara para mirar de frente a la cámara.';
+  if (!k.nivel) return 'Endereza la cabeza, sin inclinarla hacia un lado.';
+  if (!k.inclOk) return k.incl > 0 ? 'Levanta un poco la barbilla: estás mirando hacia abajo.' : 'Baja un poco la barbilla: estás mirando hacia arriba.';
+  if (conLuz && !k.luz) return luzActual.msg;
+  return '';
 }
 function pintarChecks(k) {
   $('#ckDist').classList.toggle('ok', !!(k && k.dist));
   $('#ckFrente').classList.toggle('ok', !!(k && k.frente));
   $('#ckNivel').classList.toggle('ok', !!(k && k.nivel));
+  $('#ckIncl').classList.toggle('ok', !!(k && k.inclOk));
+  $('#ckLuz').classList.toggle('ok', !!(k && k.luz));
+}
+function angMandibula(c) {
+  const q = desproyectar(c), A = (a, b, d) => { const v1 = [q[a][0] - q[b][0], q[a][1] - q[b][1]], v2 = [q[d][0] - q[b][0], q[d][1] - q[b][1]]; return Math.acos(Math.max(-1, Math.min(1, (v1[0] * v2[0] + v1[1] * v2[1]) / (Math.hypot(...v1) * Math.hypot(...v2))))) * 180 / Math.PI; };
+  return (A(132, 172, 149) + A(361, 397, 378)) / 2;    // rostro promedio ≈ 152°
+}
+const ANGULOSAS = ['cuadrada', 'rectangular', 'triangular'];
+function desempatar(r, ang) {
+  r.mand = ang;
+  const a1 = ANGULOSAS.includes(r.forma), a2 = ANGULOSAS.includes(r.segunda);
+  if (a1 !== a2 && r.conf < 60 && ((ang < 148 && !a1) || (ang > 156 && a1))) { const t = r.forma; r.forma = r.segunda; r.segunda = t; }
+  r.dudosa = r.conf < 45;
+  return r;
+}
+function muestraPiel(c) {
+  try {
+    const W = vid.videoWidth, H = vid.videoHeight, k2 = document.createElement('canvas'); k2.width = W; k2.height = H;
+    const o = k2.getContext('2d', { willReadFrequently: true }); o.drawImage(vid, 0, 0, W, H);
+    const fw = Math.abs(c[454].x - c[234].x) * W, r = Math.max(3, Math.round(fw * .025));
+    const lum = q => .299 * q[0] + .587 * q[1] + .114 * q[2];
+    const parche = (x, y, rr) => { const d = o.getImageData(Math.round(x) - rr, Math.round(y) - rr, rr * 2 + 1, rr * 2 + 1).data, out = []; for (let j = 0; j < d.length; j += 4) out.push([d[j], d[j + 1], d[j + 2]]); return out; };
+    let pxs = [50, 101, 118, 117, 123, 280, 330, 347, 346, 352].flatMap(i => parche(c[i].x * W, c[i].y * H, r));
+    pxs.sort((a, b) => lum(a) - lum(b)); pxs = pxs.slice(Math.floor(pxs.length * .15), Math.floor(pxs.length * .85));   // sin sombras ni brillos
+    if (c.length > 473) {   // balance de blancos con el blanco del ojo
+      const re = Math.max(1, Math.round(fw * .008));
+      let sc = [[33, 468], [133, 468], [263, 473], [362, 473]].flatMap(([a, b]) => parche((c[a].x + c[b].x) / 2 * W, (c[a].y + c[b].y) / 2 * H, re));
+      sc.sort((a, b) => lum(b) - lum(a)); sc = sc.slice(0, Math.max(4, Math.floor(sc.length * .4)));
+      const m = [0, 1, 2].map(j => sc.reduce((s, q) => s + q[j], 0) / sc.length), mm = (m[0] + m[1] + m[2]) / 3, [L, A2, B2] = lab(m);
+      if (L > 60 && L < 97 && Math.hypot(A2, B2) < 25 && L > lab(pxs[pxs.length >> 1])[0] + 8) {   // solo si de verdad es más claro que la piel
+        const g = m.map(v => Math.min(1.25, Math.max(.8, mm / v)));
+        pxs = pxs.map(q => q.map((v, j) => Math.min(255, v * (1 + .6 * (g[j] - 1)))));
+      }
+    }
+    return pxs.length > 50 ? pxs : null;
+  } catch (e) { return null; }
 }
 function linea(c, a, b, color) {
   const [x1, y1] = px(c, a), [x2, y2] = px(c, b);
@@ -1313,7 +1399,8 @@ async function leerPeloPiel(cara) {
             const rgb = [sr / n, sg / n, sb / n], rel = (hBot - chin) / fh;
             out.pelo = { color: colorPelo(lab(rgb)), hex: hexDe(rgb), largo: rel < -.15 ? 'corto' : rel < .3 ? 'largo medio' : 'largo', flequillo: fN > 0 && fH / fN > .35, volumen: (top - hTop) / fh > .38 };
           } else out.pelo = { color: 'muy corto o rapado', hex: '', largo: 'muy corto', flequillo: false, volumen: false };
-          if (piel.length > 200) {
+          const pc = muestraPiel(cara); if (pc) { piel.length = 0; pc.forEach(x => piel.push(x)); }
+          if (piel.length > 50) {
             const L = piel.map(lab).filter(x => x[0] > 15 && x[0] < 95), med = j => { const s = L.map(x => x[j]).sort((p, q) => p - q); return s[s.length >> 1]; };
             const l = med(0), aa = med(1), bb = med(2), hh = Math.atan2(bb, aa) * 180 / Math.PI;
             const rgbMed = [0, 1, 2].map(j => { const s = piel.map(x => x[j]).sort((p, q) => p - q); return s[s.length >> 1]; });
@@ -1332,7 +1419,7 @@ async function encender() {
     msg('Pidiendo permiso para la cámara…');
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false });
     vid.srcObject = stream; await vid.play();
-    $('#vacio').hidden = true;
+    $('#vacio').hidden = true; $('#guia').hidden = false;
     if (!detector) { msg('Cargando el detector facial (unos 4 MB, solo la primera vez)…'); detector = await crearDetector(); }
     corriendo = true; ultimo = -1; estable = 0; autoHecho = false; avisoManual = false; inicioCam = performance.now(); requestAnimationFrame(bucle);
     btnAnalizar.disabled = false;
@@ -1349,7 +1436,7 @@ function apagar(avisar = true) {
   corriendo = false; muestras = null;
   if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; vid.srcObject = null;
   cx.clearRect(0, 0, cv.width, cv.height); pintarChecks(null);
-  $('#vacio').hidden = false; poste.classList.remove('activo'); poste.style.setProperty('--p', 0);
+  $('#vacio').hidden = false; $('#guia').hidden = true; poste.classList.remove('activo'); poste.style.setProperty('--p', 0);
   btnAnalizar.disabled = true; btnCam.textContent = 'Encender cámara';
   if (avisar) msg('Cámara apagada.');
 }
@@ -1363,15 +1450,23 @@ function bucle() {
     const res = detector.detectForVideo(vid, performance.now());
     const cara = res.faceLandmarks && res.faceLandmarks[0];
     dibujar(cara);
+    if (cara && cuadro % 6 === 0) medirLuz(cara);
     const k = cara ? chequeos(cara) : null;
+    window.__ultimoK = k;
     if (++cuadro % 6 === 0) {
       pintarChecks(k);
       if (cara) { const m = medir(cara); $('#hR').textContent = m[0].toFixed(2); $('#hF').textContent = m[1].toFixed(2); $('#hJ').textContent = m[2].toFixed(2); }
     }
     if (!muestras && !autoHecho) {
-      estable = k && k.dist && k.frente && k.nivel ? estable + 1 : 0;
+      const listo = !!(k && k.dist && k.frente && k.nivel && k.inclOk && k.luz);
+      estable = listo ? estable + 1 : 0;
+      $('#guia').classList.toggle('ok', listo);
       if (estable >= 20) { autoHecho = true; iniciarAnalisis(); }
-      else if (!avisoManual && performance.now() - inicioCam > 15000) { avisoManual = true; msg('No logro una lectura estable. Mejora la luz y mira de frente, pulsa «Analizar a mano» para intentarlo a mano, o elige tu forma en la lista de abajo.'); }
+      else if (performance.now() - ultimoAviso > 700) {
+        ultimoAviso = performance.now();
+        const c2 = listo ? 'Perfecto, quédate quieto: empiezo a analizar…' : consejo(cara ? k : null);
+        msg(!listo && performance.now() - inicioCam > 25000 ? c2 + ' Si no lo logras, pulsa «Analizar a mano» o elige tu forma en la lista de abajo.' : c2);
+      }
     }
     if (muestras && performance.now() - inicioAnal > 12000) {
       muestras = null; poste.classList.remove('activo'); poste.style.setProperty('--p', 0); btnAnalizar.disabled = false;
@@ -1391,14 +1486,14 @@ function iniciarAnalisis() {
 btnAnalizar.addEventListener('click', () => { autoHecho = true; iniciarAnalisis(); });
 function recoger(cara, k) {
   const ahora = performance.now();
-  const aviso = !cara ? 'No veo tu cara. Colócate dentro del espejo.' : !k.dist ? 'Acércate un poco a la cámara.' : !k.frente ? 'Gira la cara para mirar de frente a la cámara.' : !k.nivel ? 'Endereza la cabeza, sin inclinarla.' : '';
+  const aviso = consejo(cara ? k : null, false);
   if (aviso) { if (ahora - ultimoAviso > 900) { msg(aviso); ultimoAviso = ahora; } return; }
-  muestras.push(medir(cara).concat(medirRasgos(cara)));
+  muestras.push(medir(cara).concat(medirRasgos(cara), [angMandibula(cara)]));
   poste.style.setProperty('--p', muestras.length / N);
   if (muestras.length < N) return;
-  const med = [0, 1, 2, 3, 4, 5, 6].map(j => { const v = muestras.map(m => m[j]).sort((a, b) => a - b); return v[v.length >> 1]; });
+  const med = [0, 1, 2, 3, 4, 5, 6, 7].map(j => { const v = muestras.map(m => m[j]).sort((a, b) => a - b); return v[v.length >> 1]; });
   muestras = null; poste.classList.remove('activo'); btnAnalizar.disabled = false;
-  const r = clasificar(med.slice(0, 4));
+  const r = desempatar(clasificar(med.slice(0, 4)), med[7]);
   r.extra = rasgos(med);
   r.extra.foto = capturarFoto();
   msg('Leyendo tu pelo y tu tono de piel…');

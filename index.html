@@ -393,6 +393,26 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 .leyenda-maq{display:flex;gap:18px;margin-top:10px;font-size:.88rem;color:var(--suave);padding:0;list-style:none}
 .leyenda-maq li::before{content:"";display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:7px;vertical-align:-2px;background:var(--c)}
 .nota-det{font-size:.9rem;color:var(--rojo);margin:-8px 0 16px}
+.recs>details{margin-top:14px}
+.plegable{border-top:1px solid var(--linea)}
+.plegable>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0}
+.plegable>summary::-webkit-details-marker{display:none}
+.plegable>summary::after{content:"+";font:400 2rem/1 var(--texto);color:var(--rojo);transition:rotate .4s var(--ease-out)}
+.plegable[open]>summary::after{rotate:45deg}
+.plegable>summary h3{margin:0;font-size:clamp(1.7rem,3vw,2.4rem)}
+#listaCortes .rec:first-child{background:var(--blanco);border:2px solid var(--laton);border-radius:18px;padding:22px}
+@media (min-width:700px){#listaCortes .rec.corte:first-child{grid-template-columns:280px 1fr}}
+.fade-top{display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:center;background:var(--blanco);border:2px solid var(--laton);border-radius:16px;padding:18px}
+.fade-top img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:80px 80px 8px 8px}
+.fade-top b{display:block;font:700 2rem/1 var(--display);margin-bottom:6px}
+.fades{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;list-style:none;padding:0;margin-top:14px}
+.fades li{text-align:center;font-size:.82rem;color:var(--suave)}
+.fades li.on{color:var(--tinta);font-weight:700}
+.fades img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;border:3px solid transparent;margin-bottom:4px}
+.fades li.on img{border-color:var(--rojo)}
+.tend.claro article{background:var(--blanco);box-shadow:0 18px 40px -30px rgba(17,30,45,.45)}
+.tend.claro p{color:var(--suave)}
+.tend.claro small{color:var(--rojo)}
 .intro [data-intro]{visibility:hidden}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
@@ -401,7 +421,7 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
 <header class="top" id="top">
   <div class="wrap">
     <a class="marca" href="#">Espejo<b>.</b></a>
-    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#formas">Formas de rostro</a><a href="#tendencias">Tendencias</a><a href="#peinados">Peinados</a><a href="#tutoriales">Tutoriales</a><a href="#preguntas">Preguntas</a></nav>
+    <nav aria-label="Principal"><a href="#espejo">Analizar</a><a href="#degradados">Degradados</a><a href="#formas">Formas de rostro</a><a href="#tendencias">Tendencias</a><a href="#peinados">Peinados</a><a href="#tutoriales">Tutoriales</a><a href="#preguntas">Preguntas</a></nav>
     <a class="btn" href="#espejo" data-magnet>Ir al espejo</a>
   </div>
 </header>
@@ -570,13 +590,23 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
       </aside>
       <div class="recs">
         <section id="secCambio" hidden><h3>Tu cambio</h3><div class="cambio" id="cambio"></div></section>
-        <section><h3>Cortes para ti</h3><div class="aviso" id="avisoFade" hidden></div><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol></section>
-        <section id="bloqueBarba"><h3>Barba</h3><div class="aviso" id="avisoBarba" hidden></div><ol class="lista" id="listaBarba"></ol></section>
-        <section id="secColor" hidden><h3>Color de pelo que te favorece</h3><div id="color"></div></section>
-        <section id="secMaq" hidden><h3>Tu maquillaje</h3><div class="maq" id="maquillaje"></div></section>
-        <section><h3>Peinados para tu día a día</h3><ol class="lista" id="listaPzFicha"></ol></section>
-        <section><h3>Mejor evitar</h3><ul class="evitar" id="evitar"></ul></section>
+        <section><h3>Tu corte ideal</h3><div class="aviso" id="avisoPelo" hidden></div><div id="rutaCrecer" hidden></div><ol class="lista" id="listaCortes"></ol>
+          <details class="plegable" id="masCortes"><summary><h3>Ver más opciones</h3></summary><ol class="lista" id="listaMas"></ol></details></section>
+        <section id="secFade" hidden><h3>Tu degradado</h3><div id="fade"></div></section>
+        <details class="plegable" id="bloqueBarba"><summary><h3>Barba</h3></summary><div class="aviso" id="avisoBarba" hidden></div><ol class="lista" id="listaBarba"></ol></details>
+        <details class="plegable" id="secColor" hidden><summary><h3>Color de pelo que te favorece</h3></summary><div id="color"></div></details>
+        <details class="plegable" id="secMaq" hidden><summary><h3>Tu maquillaje</h3></summary><div class="maq" id="maquillaje"></div></details>
+        <details class="plegable"><summary><h3>Peinados para tu día a día</h3></summary><ol class="lista" id="listaPzFicha"></ol></details>
+        <details class="plegable"><summary><h3>Mejor evitar</h3></summary><ul class="evitar" id="evitar"></ul></details>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" id="degradados">
+    <div class="wrap">
+      <header class="sec-cab"><div><span class="kicker">Lo básico de toda barbería</span><h2 data-lines>Degradados (fades).</h2></div>
+        <p>La altura del degradado cambia cómo se ve tu cara. Esta es la guía rápida para pedirlo bien, con la forma de rostro a la que mejor le queda.</p></header>
+      <div class="tend claro" id="gridFades"></div>
     </div>
   </section>
 
@@ -834,7 +864,15 @@ Object.assign(CORTES_M, {
   'bob-recto': ['Bob recto (blunt)', 'Bob a la altura de la mandíbula con corte recto en bloque, sin capas, y puntas pulidas.']
 });
 Object.assign(LARGO, { 'taper-bajo': 'corto', 'rizos-degradado': 'corto', 'butterfly': 'largo', 'shag-moderno': 'medio', 'bob-recto': 'medio' });
-const FADES = { low: ['Low fade', 'empieza justo encima de la oreja y en la nuca, del 0 al 2; deja los lados con cuerpo'], mid: ['Mid fade', 'empieza a la altura de la sien, del 0 al 2; el más versátil'], high: ['High fade', 'empieza en lo alto de los lados, del 0 (o a piel) al 2; alarga la cara'], taper: ['Taper', 'solo en patillas y nuca; el resto de los lados a tijera o máquina 3'] };
+const FADES = {
+  low: ['Low fade', 'empieza justo encima de la oreja y en la nuca, del 0 al 2; deja los lados con cuerpo'],
+  mid: ['Mid fade', 'empieza a la altura de la sien, del 0 al 2; el más versátil'],
+  high: ['High fade', 'empieza en lo alto de los lados, del 0 (o a piel) al 2; alarga la cara'],
+  taper: ['Taper', 'solo en patillas y nuca; el resto de los lados a tijera o máquina 3'],
+  skin: ['Skin fade', 'a cualquier altura, pero arrancando a piel (0 o navaja); el contraste más marcado'],
+  burst: ['Burst fade', 'en semicírculo alrededor de la oreja y la nuca más larga; ideal con mullet o mohicano'],
+  drop: ['Drop fade', 'baja detrás de la oreja hacia la nuca en curva; se ve más natural de perfil']
+};
 const FADE_FORMA = { ovalada: 'mid', redonda: 'high', cuadrada: 'mid', rectangular: 'low', alargada: 'low', corazon: 'taper', diamante: 'low', triangular: 'taper' };
 const TODAS = ['ovalada', 'redonda', 'cuadrada', 'rectangular', 'alargada', 'corazon', 'diamante', 'triangular'];
 const TENDENCIAS = {
@@ -1026,6 +1064,8 @@ function ordenarCortes(cortes) {
 function tagsCorte(slug, i, tend) {
   const t = [`<li class="l">${NOMBRE_LARGO[LARGO[slug]]}</li>`];
   if (tend) t.unshift('<li>Tendencia 2026</li>');
+  if (i === 0) t.unshift('<li>Tu corte ideal' + (modo === 'h' && formaActual ? ' + ' + FADES[FADE_FORMA[formaActual]][0] : '') + '</li>');
+  else if (i < 3) t.unshift('<li class="l">Alternativa</li>');
   if (i === 0 && pref.plan === 'crecer' && LARGO[slug] !== 'corto') t.unshift('<li>Tu meta de largo</li>');
   if (i === 0 && pref.plan === 'corto') t.unshift('<li>El más práctico</li>');
   if (i === 0 && pref.plan === 'mantener') t.unshift('<li>Mejor forma con tu largo</li>');
@@ -1051,14 +1091,17 @@ function renderFicha(desplazar) {
   let i = 0;
   const cortes = ordenarCortes(g.cortes);
   const tendF = TENDENCIAS[modo].filter(t => t[1].includes(forma)).slice(0, 2).map(t => [t[0], t[2], 1]);
-  $('#listaCortes').innerHTML = cortes.concat(tendF).map(([slug, por, tend], k) => {
+  const itemsC = cortes.concat(tendF).map(([slug, por, tend], k) => {
     if (modo === 'h') {
       const [n, pide, mant, prod] = CORTES_H[slug];
       return `<li class="rec corte" style="--i:${i++}">${fotoCorte(slug, n)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k, tend)}<p class="por">${por}</p><p class="pide"><b>Pídele al barbero:</b> ${pide}</p><p class="meta">Mantenimiento cada ${mant} · Producto: ${prod}</p><a class="enlace yt" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent('corte ' + n + ' barbero tutorial')}">Ver cómo lo hace un profesional ↗</a></div></li>`;
     }
     const [n, pide] = CORTES_M[slug];
     return `<li class="rec corte" style="--i:${i++}">${fotoCorte(slug, n)}<div><div class="rec-cab"><h4>${n}</h4></div>${tagsCorte(slug, k, tend)}<p class="por">${por}</p><p class="pide"><b>Pide en el salón:</b> ${pide}</p><a class="enlace yt" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent('corte ' + n + ' estilista tutorial')}">Ver cómo lo hace un profesional ↗</a></div></li>`;
-  }).join('');
+  });
+  $('#listaCortes').innerHTML = itemsC.slice(0, 3).join('');
+  $('#listaMas').innerHTML = itemsC.slice(3).join('');
+  $('#masCortes').hidden = itemsC.length <= 3;
 
   const pe = a && a.extra && a.extra.pelo;
   $('#secCambio').hidden = !pe;
@@ -1071,8 +1114,12 @@ function renderFicha(desplazar) {
     $('#cambio').innerHTML = `<figure>${a.extra.foto ? `<img src="${a.extra.foto}" alt="Tu foto de hoy">` : ''}<figcaption>Hoy<b>${peinadoActual(pe)}</b></figcaption></figure><span class="flecha" aria-hidden="true">→</span>` +
       `<figure><img src="cortes/${meta}.jpg" alt="${esc(nm)}"><figcaption>Te sugerimos<b>${nm}</b></figcaption></figure><p>${txt}</p>`;
   }
-  $('#avisoFade').hidden = modo !== 'h';
-  if (modo === 'h') { const fd = FADES[FADE_FORMA[forma]]; $('#avisoFade').innerHTML = `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 26h20M8 20h16M10 14h12M12 8h8"/></svg><div><b>Tu degradado: ${fd[0]}</b>Pídelo así: ${fd[1]}. Combínalo con el corte que elijas. Variantes: skin fade (a piel), burst fade (en semicírculo alrededor de la oreja) y drop fade (baja detrás de la oreja).</div>`; }
+  $('#secFade').hidden = modo !== 'h';
+  if (modo === 'h') {
+    const k = FADE_FORMA[forma], fd = FADES[k];
+    $('#fade').innerHTML = `<div class="fade-top"><img src="cortes/fade-${k}.jpg" alt="Ejemplo real: ${fd[0]}"><div><b>${fd[0]}</b><p>Pídelo así: ${fd[1]}.</p><p class="meta">Recomendado para rostro ${F.nombre.toLowerCase()}. Combínalo con tu corte ideal.</p></div></div>` +
+      `<ul class="fades">${Object.entries(FADES).map(([kk, [nn]]) => `<li${kk === k ? ' class="on"' : ''}><img src="cortes/fade-${kk}.jpg" alt="" loading="lazy">${nn}</li>`).join('')}</ul>`;
+  }
   const tip = TIP_PELO[pref.pelo];
   $('#avisoPelo').hidden = !tip;
   if (tip) $('#avisoPelo').innerHTML = `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M16 14v9M16 9v1"/></svg><div><b>${tip[0]}</b>${tip[1]}</div>`;
@@ -1390,6 +1437,10 @@ addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 })();
 
 renderPeinados();
+$('#gridFades').innerHTML = Object.entries(FADES).map(([k, [n, d]]) => {
+  const fs = Object.entries(FADE_FORMA).filter(([, v]) => v === k).map(([f]) => FORMAS[f].nombre.toLowerCase());
+  return `<article><img src="cortes/fade-${k}.jpg" alt="Ejemplo real: ${esc(n)}" loading="lazy"><div><h3>${n}</h3><p>${d[0].toUpperCase() + d.slice(1)}.</p><small>${fs.length ? 'Ideal para rostro: ' + fs.join(', ') : 'Variante: combínalo con la altura que te recomendemos'}</small></div></article>`;
+}).join('');
 $('#gridTend').innerHTML = ['h', 'm'].flatMap(g => TENDENCIAS[g].map(([s, fs, d]) => {
   const n = (g === 'h' ? CORTES_H : CORTES_M)[s][0];
   return `<article><img src="cortes/${s}.jpg" alt="Ejemplo real: ${esc(n)}" loading="lazy"><div><h3>${n}</h3><p>${d}</p><small>${g === 'h' ? 'Hombre' : 'Mujer'} · Va con: ${fs.map(f => FORMAS[f].nombre.toLowerCase()).join(', ')}</small></div></article>`;
